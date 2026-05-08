@@ -1,0 +1,59 @@
+img {
+  max-width: 700px;
+  width: 100%;
+  height: auto;
+
+  display: block;
+  margin: 24px auto;
+
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+/* 🔒 FORCE images to stay inside blog content */
+.prose img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  object-fit: contain;
+}
+
+/* 🔒 Figure wrapper safety (Editor.js injected images) */
+.prose figure {
+  max-width: 100%;
+  overflow: hidden;
+}
+/* Base image styling */
+.prose img {
+  display: block;
+  max-width: none;   /* allow natural width */
+  height: auto;
+}
+
+/* Wrapper becomes scrollable if image is wide */
+.prose figure {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+}
+
+/* Center images that fit */
+.prose figure img {
+  margin: 0 auto;
+}
+
+/* Optional: scrollbar style (nice on desktop) */
+.prose figure::-webkit-scrollbar {
+  height: 6px;
+}
+
+.prose figure::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}

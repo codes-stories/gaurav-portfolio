@@ -10,7 +10,7 @@ export default function About() {
 
   useEffect(() => {
     const githubcall = async () => {
-      fetch("https://api.github.com/users/gk022135")
+      fetch("https://api.github.com/users/codes-stories")
         .then((response) => response.json())
         .then((data) => {
           setGitHubData(data);
@@ -177,7 +177,7 @@ export default function About() {
                     </div>
                     <div>
                       <h4 className="text-xl font-bold">GitHub</h4>
-                      <p className="text-xs text-zinc-500">@{gitHubData?.login || "gk022135"}</p>
+                      <p className="text-xs text-zinc-500">@{gitHubData?.login || "codes-stories"}</p>
                     </div>
                   </div>
                   

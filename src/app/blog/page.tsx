@@ -3,13 +3,14 @@ import Blog from "../../lib/models/blogs";
 import BlogCard from "../../components/BlogCard";
 import Footer from "@/components/Footer";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function BlogListPage() {
   await connectDB();
   const blogs = await Blog.find({ published: true })
     .sort({ createdAt: -1 })
-    .populate("author", "name");
+    .populate("author", "name")
+    .lean();
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-black to-zinc-900 mt-5">

@@ -11,30 +11,41 @@ import { FloatingElements } from "@/components/Bacground";
 import { Projects } from "./projects/page";
 import { Contact } from "@/components/contact";
 import ToolsLearned from "@/components/Tool-learn";
+import ProfileVisitorTracker from "@/components/ProfileVisitorTracker";
+import InterviewSignalPanel from "@/components/InterviewSignalPanel";
+import ProfessionalSnapshot from "@/components/ProfessionalSnapshot";
 
 export default function Home() {
   return (
     <div className="bg-black text-white relative">
       {/* Background */}
       <FloatingElements />
+      <ProfileVisitorTracker />
 
       {/* Navbar */}
-      {/* <NavbarDemo /> */}
+      <NavbarDemo />
 
       {/* HERO */}
       <section
         id="home"
-        className="min-h-screen flex items-center justify-center"
+        className="flex min-h-screen items-center justify-center pt-20"
       >
         <div className="max-w-6xl w-full px-6 text-center">
           <HeroSection />
+          <InterviewSignalPanel />
+        </div>
+      </section>
+
+      <section className="py-20 flex items-center justify-center">
+        <div className="max-w-6xl w-full px-6">
+          <ProfessionalSnapshot />
         </div>
       </section>
 
       {/* PROJECTS */}
       <section
         id="projects"
-        className="py-24 flex items-center justify-center"
+        className="py-20 flex items-center justify-center"
       >
         <div className="max-w-6xl w-full px-6 text-center">
           <Projects />

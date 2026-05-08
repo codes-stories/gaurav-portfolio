@@ -29,7 +29,7 @@ export default function AdminLogin() {
       <form onSubmit={handle} className="space-y-3">
         <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Admin password" className="w-full border px-3 py-2 rounded" />
         {error && <div className="text-red-600">{error}</div>}
-        <button className="px-4 py-2 bg-black text-white rounded">Sign in</button>
+        <button className="px-4 py-2 bg-black text-white rounded border-1 border-amber-500">Sign in</button>
       </form>
     </main>
   );

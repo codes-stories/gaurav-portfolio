@@ -5,9 +5,11 @@ import { X, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
+  { label: "Home", id: "home" },
   { label: "Projects", id: "projects" },
   { label: "Skills", id: "skills" },
   { label: "Timeline", id: "timeline" },
+  { label: "Contact", id: "contact" },
 ];
 
 export function NavbarDemo() {
@@ -37,9 +39,9 @@ export function NavbarDemo() {
         {/* LOGO */}
         <a
           href="/"
-          className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
+          className="text-lg sm:text-xl font-semibold tracking-tight text-white"
         >
-          Portfolio
+          Gaurav Kumar
         </a>
 
         {/* DESKTOP MENU */}

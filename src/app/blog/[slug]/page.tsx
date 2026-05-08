@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import editorjsHtml from "editorjs-html";
 import BlogShare from "../../../components/blogShare";
 
+import './blog.css';
+
 export const dynamic = "force-dynamic";
 
 /* ----------------------------------------------------
