@@ -1,13 +1,14 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import BlogEditor from "../../../components/BlogEditor";
+import BlogEditor from "@/components/BlogEditor";
+import { getAdminToken } from "@/lib/auth";
 
 export default async function AdminBlogsPage() {
   const cookieStore = cookies();
   const token = (await cookieStore).get("admin-token")?.value;
-  const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
+  const ADMIN_TOKEN = getAdminToken();
 
-  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+  if (token !== ADMIN_TOKEN) {
     redirect("/admin/login");
   }
 

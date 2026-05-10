@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { connectDB } from "../../../../lib/db";
 import user from "@/lib/models/user";
+import { getAdminPassword, getAdminToken } from "../../../../lib/auth";
 
 
 
@@ -13,11 +14,10 @@ export async function POST(req: Request) {
     console.log("Database connected");
     const body = await req.json();
     console.log("Request body:", body.password);
-    const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123"; // Default password if not set
+    const ADMIN_TOKEN = getAdminToken();
+    const ADMIN_PASSWORD = getAdminPassword(); // Default password if not set
     console.log("Admin token:", ADMIN_TOKEN);
     console.log("Admin password:", ADMIN_PASSWORD);
-    if (!ADMIN_TOKEN) return NextResponse.json({ error: "Server not configured" }, { status: 500 });
     if (!body?.password || body.password !== ADMIN_PASSWORD) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
