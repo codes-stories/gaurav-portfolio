@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { label: "Home", id: "home" },
   { label: "Projects", id: "projects" },
   { label: "Skills", id: "skills" },
-  { label: "Timeline", id: "timeline" },
   { label: "Contact", id: "contact" },
 ];
 
@@ -56,7 +55,7 @@ export function NavbarDemo() {
                 {item.label}
               </button>
             ))}
-
+          <NavLink href="/courses">Courses</NavLink>
           <NavLink href="/about">Me</NavLink>
           <NavLink href="/blog">Blogs</NavLink>
           <NavLink href="/admin/inbox">Inbox</NavLink>
@@ -86,7 +85,9 @@ export function NavbarDemo() {
                   {item.label}
                 </button>
               ))}
-
+            <MobileLink href="/courses" onClick={() => setIsMenuOpen(false)}>
+              Courses
+            </MobileLink>
             <MobileLink href="/about" onClick={() => setIsMenuOpen(false)}>
               Me
             </MobileLink>
