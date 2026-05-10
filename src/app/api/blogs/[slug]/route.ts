@@ -28,7 +28,14 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
     const { slug } = params;
     const body = await req.json();
     await connectDB();
-    const blog = await Blog.findOneAndUpdate({ slug }, body, { new: true });
+    const blog = await Blog.findOneAndUpdate(
+      { slug },
+      {
+        ...body,
+        isCourse: Boolean(body.courseId),
+      },
+      { new: true }
+    );
     if (!blog) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(blog);
   } catch (e: any) {

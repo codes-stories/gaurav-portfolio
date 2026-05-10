@@ -15,11 +15,16 @@ function parseCookie(cookieHeader: string): Record<string, string> {
   return result;
 }
 
+export function getAdminToken() {
+  return process.env.ADMIN_TOKEN || process.env.ADMIN_PASSWORD || "admin123";
+}
+
+export function getAdminPassword() {
+  return process.env.ADMIN_PASSWORD || "admin123";
+}
+
 export function requireAdmin(req: Request | { headers?: any }) {
-  const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
-  if (!ADMIN_TOKEN) {
-    throw new Error("ADMIN_TOKEN is not set in environment");
-  }
+  const ADMIN_TOKEN = getAdminToken();
 
   // Check x-admin-token header first
   try {
