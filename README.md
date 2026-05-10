@@ -1,10 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🌐 Personal Portfolio & Daily Blog Website
 
-## Getting Started
+A modern and fully responsive personal portfolio website built with Next.js, featuring a dynamic daily blog writing system where I share thoughts, experiences, and technical learnings.
 
-First, run the development server:
+Built using Next.js App Router, optimized fonts, and clean UI design.
 
-```bash
+🚀 Features
+
+✨ Modern & Responsive UI
+
+🧑‍💻 Personal Portfolio Showcase
+
+📝 Daily Blog Writing Functionality
+
+📄 Dynamic Blog Pages
+
+🔍 SEO Optimized
+
+⚡ Fast Performance with Next.js
+
+🎨 Optimized Fonts using next/font
+
+🌙 Clean and Minimal Design
+
+🛠️ Tech Stack
+
+Framework: Next.js
+
+Language: TypeScript
+
+Styling: (Add yours here — Tailwind CSS / CSS Modules / etc.)
+
+Font Optimization: next/font
+
+Deployment: Vercel (Recommended)
+
+📸 Screenshots
+
+⚠️ Replace the image paths below with actual screenshots from your project.
+Store images inside a /public/screenshots folder.
+
+🏠 Home Page
+
+👤 About / Portfolio Section
+
+📝 Blog Listing Page
+
+📖 Individual Blog Post Page
+
+✍️ Write Daily Blog (Admin / Editor View)
+
+🧩 Project Structure
+/app
+  ├── page.tsx          # Home Page
+  ├── blog/             # Blog Routes
+  ├── about/            # About Page
+/components             # Reusable Components
+/public                 # Static Assets & Screenshots
+/styles                 # Global Styles
+⚙️ Getting Started
+
+This is a Next.js project bootstrapped with create-next-app.
+
+1️⃣ Install Dependencies
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+2️⃣ Run the Development Server
 npm run dev
 # or
 yarn dev
@@ -12,25 +77,67 @@ yarn dev
 pnpm dev
 # or
 bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
+ in your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the homepage by modifying:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+app/page.tsx
 
-## Learn More
+The page auto-updates as you edit the file.
 
-To learn more about Next.js, take a look at the following resources:
+📝 Blog Functionality
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The blog system allows:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Creating daily blog posts
 
-## Deploy on Vercel
+Dynamic routing for each blog (/blog/[slug])
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Rendering blog content dynamically
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Future-ready for database or CMS integration
+
+You can expand it by integrating:
+
+MongoDB
+
+PostgreSQL
+
+Prisma
+
+Sanity
+
+Markdown (MDX)
+
+📦 Build for Production
+npm run build
+npm start
+🚀 Deploy on Vercel
+
+The easiest way to deploy your Next.js app is using Vercel.
+
+Push your project to GitHub
+
+Import the repository into Vercel
+
+Deploy 🚀
+
+📚 Learn More
+
+To learn more about Next.js:
+
+https://nextjs.org/docs
+
+https://nextjs.org/learn
+
+👨‍💻 Author
+
+Your Name
+
+Portfolio: https://gaurav-portfolio-sepia.vercel.app/
+
+GitHub: https://github.com/gk022135
+
+LinkedIn: https://www.linkedin.com/in/gauravkrrr/

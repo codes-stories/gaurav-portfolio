@@ -81,3 +81,21 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+.nav-link {
+  @apply text-sm lg:text-base text-white/70 hover:text-white transition-colors;
+}
+
+.mobile-link {
+  @apply block w-full text-white/80 hover:text-white py-3 border-b border-white/10;
+}
+
+
+img,
+figure,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}

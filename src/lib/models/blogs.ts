@@ -48,6 +48,26 @@ const BlogSchema = new Schema(
       type: Number,
       default: 0,
     },
+    //add the course id optional field
+    isCourse: {
+      type: Boolean,
+      default: false,
+    },
+    courseId: {
+      type: Schema.Types.ObjectId,
+      ref: "Course",
+      required: false,
+    },
+    chapterId: {
+      type: Schema.Types.ObjectId,
+      ref: "Chapter",
+      required: false,
+    },
+    sectionId: {
+      type: Schema.Types.ObjectId,
+      ref: "Section",
+      required: false,
+    },
   },
   { timestamps: true }
 );

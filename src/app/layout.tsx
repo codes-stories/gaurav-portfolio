@@ -15,9 +15,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <NavbarDemo />
-      <body className="bg-black">
-        {children}
+      <body className="bg-black text-white antialiased">
+        <NavbarDemo />
+
+        {/* Page content offset for fixed navbar */}
+        <main className="pt-16 sm:pt-18">
+          {children}
+        </main>
       </body>
     </html>
   );

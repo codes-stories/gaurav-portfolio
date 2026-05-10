@@ -1,10 +1,31 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import {
+  Bold,
+  Heading2,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Quote,
+  Save,
+  Underline,
+} from "lucide-react";
 
 type BlogEditorProps = {
   onSave: (data: any) => void;
   initialData?: string;
 };
+
+const toolbarButtons = [
+  { label: "Bold", command: "bold", icon: Bold },
+  { label: "Italic", command: "italic", icon: Italic },
+  { label: "Underline", command: "underline", icon: Underline },
+  { label: "Heading", command: "formatBlock", value: "h2", icon: Heading2 },
+  { label: "Quote", command: "formatBlock", value: "blockquote", icon: Quote },
+  { label: "Bullet list", command: "insertUnorderedList", icon: List },
+  { label: "Numbered list", command: "insertOrderedList", icon: ListOrdered },
+];
 
 const BlogEditor = ({ onSave, initialData }: BlogEditorProps) => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -24,6 +45,12 @@ const BlogEditor = ({ onSave, initialData }: BlogEditorProps) => {
     editorRef.current?.focus();
   };
 
+  const addLink = () => {
+    const url = window.prompt("Paste the URL");
+    if (!url) return;
+    exec("createLink", url);
+  };
+
   const handleInput = () => {
     if (!editorRef.current) return;
     setHtml(editorRef.current.innerHTML);
@@ -34,53 +61,57 @@ const BlogEditor = ({ onSave, initialData }: BlogEditorProps) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="border rounded-xl p-4 bg-gray-300 shadow-sm">
-        <div className="mb-3 flex gap-2 text-black">
-          <button onClick={() => exec("bold")} className="px-3 py-1 bg-gray-100 rounded">
-            Bold
-          </button>
-          <button onClick={() => exec("italic")} className="px-3 py-1 bg-gray-100 rounded">
-            Italic
-          </button>
-          <button onClick={() => exec("underline")} className="px-3 py-1 bg-gray-100 rounded">
-            Underline
-          </button>
+    <div className="rounded-2xl border border-white/10 bg-zinc-950/80 shadow-2xl shadow-black/20">
+      <div className="border-b border-white/10 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {toolbarButtons.map(({ label, command, value, icon: Icon }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => exec(command, value)}
+              title={label}
+              aria-label={label}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-white/70 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
+            >
+              <Icon size={17} />
+            </button>
+          ))}
           <button
-            onClick={() => exec("insertUnorderedList")}
-            className="px-3 py-1 bg-gray-100 rounded"
+            type="button"
+            onClick={addLink}
+            title="Add link"
+            aria-label="Add link"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-white/70 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
           >
-            Bullet List
-          </button>
-          <button
-            onClick={() => exec("insertOrderedList")}
-            className="px-3 py-1 bg-gray-100 rounded"
-          >
-            Numbered List
-          </button>
-          <button
-            onClick={() => exec("formatBlock", "h2")}
-            className="px-3 py-1 bg-gray-100 rounded"
-          >
-            H2
+            <Link size={17} />
           </button>
         </div>
+      </div>
 
+      <div className="p-5">
         <div
           ref={editorRef}
           contentEditable
           onInput={handleInput}
           suppressContentEditableWarning
-          className="prose prose-lg max-w-none min-h-[200px] focus:outline-none"
+          data-placeholder="Write the article body here..."
+          className="prose prose-invert prose-lg min-h-[360px] max-w-none rounded-xl border border-white/10 bg-black/30 px-5 py-4 text-white outline-none transition focus:border-cyan-300/40 empty:before:pointer-events-none empty:before:text-white/30 empty:before:content-[attr(data-placeholder)]"
         />
-      </div>
 
-      <button
-        onClick={handleSave}
-        className="mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
-      >
-        Publish
-      </button>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-white/45">
+            Supports headings, quotes, links, and lists. Content is saved as HTML.
+          </p>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-cyan-200 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white"
+          >
+            <Save size={16} />
+            Publish
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
