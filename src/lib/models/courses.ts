@@ -30,7 +30,15 @@ const CourseSchema = new Schema(
 
 CourseSchema.pre("validate", function (next) {
     if (!this.slug && this.title) {
-        this.slug = slugify(this.title);
+        const text = this.title;
+        this.slug = (text || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
     }
     next();
 });
@@ -48,7 +56,15 @@ const ChapterSchema = new Schema(
 
 ChapterSchema.pre("validate", function (next) {
     if (!this.slug && this.title) {
-        this.slug = slugify(this.title);
+        const text = this.title;
+        this.slug = (text || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
     }
     next();
 });
@@ -66,7 +82,15 @@ const SectionSchema = new Schema(
 
 SectionSchema.pre("validate", function (next) {
     if (!this.slug && this.title) {
-        this.slug = slugify(this.title);
+        const text = this.title;
+        this.slug = (text || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
     }
     next();
 });
