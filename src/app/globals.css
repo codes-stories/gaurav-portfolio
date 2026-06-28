@@ -91,6 +91,24 @@ body {
   @apply block w-full text-white/80 hover:text-white py-3 border-b border-white/10;
 }
 
+.tracker-input {
+  @apply w-full rounded-md border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-cyan-300/60;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+
 
 img,
 figure,
