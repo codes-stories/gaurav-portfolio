@@ -56,6 +56,7 @@ export function NavbarDemo() {
               </button>
             ))}
           <NavLink href="/courses">Courses</NavLink>
+          <NavLink href="/tracker">Tracker</NavLink>
           <NavLink href="/about">Me</NavLink>
           <NavLink href="/blog">Blogs</NavLink>
           <NavLink href="/admin/inbox">Inbox</NavLink>
@@ -87,6 +88,9 @@ export function NavbarDemo() {
               ))}
             <MobileLink href="/courses" onClick={() => setIsMenuOpen(false)}>
               Courses
+            </MobileLink>
+            <MobileLink href="/tracker" onClick={() => setIsMenuOpen(false)}>
+              Tracker
             </MobileLink>
             <MobileLink href="/about" onClick={() => setIsMenuOpen(false)}>
               Me
