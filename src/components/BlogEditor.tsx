@@ -48,6 +48,12 @@ export default function BlogEditor({ initialData, slug }: Props) {
     Array.isArray(initialData?.tags) ? initialData.tags.join(", ") : ""
   );
   const [published, setPublished] = useState(Boolean(initialData?.published));
+  const [isHtmlPost, setIsHtmlPost] = useState(Boolean(initialData?.isHtmlPost));
+  const [htmlMarkup, setHtmlMarkup] = useState(
+    typeof initialData?.content === "string" ? initialData.content : ""
+  );
+  const [htmlStyles, setHtmlStyles] = useState("");
+  const [htmlScripts, setHtmlScripts] = useState("");
 
   const [courses, setCourses] = useState<CourseType[]>([]);
   const [courseSelection, setCourseSelection] = useState<string>(
@@ -67,6 +73,14 @@ export default function BlogEditor({ initialData, slug }: Props) {
   const [newCoursePrice, setNewCoursePrice] = useState("0");
   const [newChapterTitle, setNewChapterTitle] = useState("");
   const [newSectionTitle, setNewSectionTitle] = useState("");
+
+  function buildHtmlPostContent() {
+    const markup = htmlMarkup || "<div></div>";
+    const styles = htmlStyles ? `<style>${htmlStyles}</style>` : "";
+    const scripts = htmlScripts ? `<script>${htmlScripts}<\/script>` : "";
+
+    return `${styles}${markup}${scripts}`;
+  }
 
   useEffect(() => {
     async function fetchCourses() {
@@ -105,6 +119,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
   async function handleEditorSave(content: string) {
     setSaving(true);
     try {
+      const resolvedContent = isHtmlPost ? buildHtmlPostContent() : content;
       let resolvedCourseId = courseSelection && courseSelection !== "new-course" ? courseSelection : "";
       let resolvedChapterId = chapterSelection && chapterSelection !== "new-chapter" ? chapterSelection : "";
       let resolvedSectionId = sectionSelection && sectionSelection !== "new-section" ? sectionSelection : "";
@@ -211,6 +226,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
         courseId: resolvedCourseId || undefined,
         chapterId: resolvedChapterId || undefined,
         sectionId: resolvedSectionId || undefined,
+        isHtmlPost,
         slug:
           postSlug ||
           (title
@@ -219,7 +235,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/(^-|-$)/g, "")
             : ""),
-        content,
+        content: resolvedContent,
         coverImage,
         tags: tags ? tags.split(",").map((tag: string) => tag.trim()) : [],
         published,
@@ -301,28 +317,66 @@ export default function BlogEditor({ initialData, slug }: Props) {
             />
           </label>
 
-          <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
-            <span className="text-sm text-white/80">Course</span>
-            <select
-              value={courseSelection}
-              onChange={(e) => {
-                setCourseSelection(e.target.value);
-                setChapterSelection("");
-                setSectionSelection("");
-              }}
-              className="rounded-md border border-white/10 bg-zinc-900 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/30"
-            >
-              <option value="">No course</option>
-              {courses.map((course) => (
-                <option key={course._id} value={course._id}>
-                  {course.title}
-                </option>
-              ))}
-              <option value="new-course">Create New Course</option>
-            </select>
+          <label className="flex items-center justify-between rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
+            <span className="text-sm text-white/80">Make HTML post</span>
+            <input
+              type="checkbox"
+              checked={isHtmlPost}
+              onChange={(e) => setIsHtmlPost(e.target.checked)}
+              className="h-4 w-4 accent-white"
+            />
           </label>
 
-          {courseSelection === "new-course" && (
+          {isHtmlPost && (
+            <div className="grid grid-cols-1 gap-4 md:col-span-2">
+              <textarea
+                value={htmlMarkup}
+                onChange={(e) => setHtmlMarkup(e.target.value)}
+                placeholder="Paste HTML here"
+                rows={10}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/30"
+              />
+              <textarea
+                value={htmlStyles}
+                onChange={(e) => setHtmlStyles(e.target.value)}
+                placeholder="Paste CSS here"
+                rows={8}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/30"
+              />
+              <textarea
+                value={htmlScripts}
+                onChange={(e) => setHtmlScripts(e.target.value)}
+                placeholder="Paste JavaScript here"
+                rows={8}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/30"
+              />
+            </div>
+          )}
+
+          {!isHtmlPost && (
+            <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
+              <span className="text-sm text-white/80">Course</span>
+              <select
+                value={courseSelection}
+                onChange={(e) => {
+                  setCourseSelection(e.target.value);
+                  setChapterSelection("");
+                  setSectionSelection("");
+                }}
+                className="rounded-md border border-white/10 bg-zinc-900 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/30"
+              >
+                <option value="">No course</option>
+                {courses.map((course) => (
+                  <option key={course._id} value={course._id}>
+                    {course.title}
+                  </option>
+                ))}
+                <option value="new-course">Create New Course</option>
+              </select>
+            </label>
+          )}
+
+          {!isHtmlPost && courseSelection === "new-course" && (
             <div className="grid grid-cols-1 gap-4 rounded-2xl border border-cyan-300/20 bg-cyan-500/5 p-4 md:col-span-2 md:grid-cols-2">
               <input
                 value={newCourseTitle}
@@ -373,7 +427,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </div>
           )}
 
-          {courseSelection && courseSelection !== "new-course" && (
+          {!isHtmlPost && courseSelection && courseSelection !== "new-course" && (
             <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Chapter</span>
               <select
@@ -395,7 +449,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </label>
           )}
 
-          {chapterSelection === "new-chapter" && (
+          {!isHtmlPost && chapterSelection === "new-chapter" && (
             <input
               value={newChapterTitle}
               onChange={(e) => setNewChapterTitle(e.target.value)}
@@ -404,7 +458,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             />
           )}
 
-          {chapterSelection && chapterSelection !== "new-chapter" && (
+          {!isHtmlPost && chapterSelection && chapterSelection !== "new-chapter" && (
             <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Section</span>
               <select
@@ -423,7 +477,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </label>
           )}
 
-          {sectionSelection === "new-section" && (
+          {!isHtmlPost && sectionSelection === "new-section" && (
             <input
               value={newSectionTitle}
               onChange={(e) => setNewSectionTitle(e.target.value)}
@@ -434,7 +488,27 @@ export default function BlogEditor({ initialData, slug }: Props) {
         </div>
       </div>
 
-      <Editor onSave={handleEditorSave} initialData={initialContent} />
+      {isHtmlPost ? (
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-6 shadow-2xl shadow-black/20">
+          <p className="mb-4 text-sm text-white/60">
+            HTML posts use the code fields above and render inside a sandboxed preview on the blog page.
+          </p>
+          <div className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white/70">
+            The rich text editor is disabled for HTML posts.
+          </div>
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={() => handleEditorSave("")}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-cyan-200 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white"
+            >
+              Save HTML post
+            </button>
+          </div>
+        </div>
+      ) : (
+        <Editor onSave={handleEditorSave} initialData={initialContent} />
+      )}
 
       {saving && (
         <div className="flex items-center gap-2 text-sm text-white/60">
