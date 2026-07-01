@@ -28,22 +28,44 @@ function injectInlineImages(html: string) {
   );
 }
 
-function injectInlineImages(html: string) {
-  const imageRegex = /\[\[image:(https?:\/\/[^\]]+)\]\]/gi;
+function buildHtmlPreviewSource(blog: any) {
+  if (typeof blog.content === "string") {
+    return `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      body { padding: 24px; }
+    </style>
+  </head>
+  <body>
+    ${blog.content}
+  </body>
+</html>`;
+  }
 
-  return html.replace(
-    imageRegex,
-    (_, url) => `
-      <figure class="my-14 overflow-hidden rounded-2xl border border-white/10 bg-black">
-        <img
-          src="${url}"
-          alt="Blog image"
-          loading="lazy"
-          class="w-full object-cover"
-        />
-      </figure>
-    `
-  );
+  const markup = typeof blog.content?.htmlMarkup === "string" ? blog.content.htmlMarkup : "";
+  const styles = typeof blog.content?.htmlStyles === "string" ? `<style>${blog.content.htmlStyles}</style>` : "";
+  const scripts = typeof blog.content?.htmlScripts === "string" ? `<script>${blog.content.htmlScripts}</script>` : "";
+
+  return `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      body { padding: 24px; }
+    </style>
+    ${styles}
+  </head>
+  <body>
+    ${markup}
+    ${scripts}
+  </body>
+</html>`;
 }
 
 export default async function BlogPage({
