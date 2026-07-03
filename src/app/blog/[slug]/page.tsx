@@ -102,7 +102,7 @@ export default async function BlogPage({
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black">
-      <article className="max-w-3xl mx-auto px-4 py-20 text-white">
+      <article className="mx-auto max-w-3xl px-4 py-20 text-white">
         {/* Header */}
         <header className="mb-14">
           <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
@@ -133,14 +133,7 @@ export default async function BlogPage({
         )}
 
         {/* Content */}
-        {isHtmlPost ? (
-          <iframe
-            title={blog.title}
-            srcDoc={buildHtmlPreviewSource(blog)}
-            sandbox="allow-scripts"
-            className="min-h-[600px] w-full rounded-2xl border border-white/10 bg-black"
-          />
-        ) : (
+        {!isHtmlPost && (
           <div
             className="
               prose prose-invert prose-lg max-w-none
@@ -155,10 +148,40 @@ export default async function BlogPage({
         )}
 
         {/* Comments */}
-        <div className="mt-20">
-          <CommentSection blogId={String(blog._id)} />
-        </div>
+        {!isHtmlPost && (
+          <div className="mt-20">
+            <CommentSection blogId={String(blog._id)} />
+          </div>
+        )}
       </article>
+
+      {isHtmlPost && (
+        <section className="mx-auto w-full max-w-7xl px-4 pb-20 text-white">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/80">
+                HTML preview
+              </p>
+              <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">
+                Full-bleed interactive layout
+              </h2>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl border border-white/10 bg-black shadow-2xl shadow-black/30">
+            <iframe
+              title={blog.title}
+              srcDoc={buildHtmlPreviewSource(blog)}
+              sandbox="allow-scripts"
+              className="min-h-[900px] w-full bg-black"
+            />
+          </div>
+
+          <div className="mt-10">
+            <CommentSection blogId={String(blog._id)} />
+          </div>
+        </section>
+      )}
 
       <Footer />
     </main>
