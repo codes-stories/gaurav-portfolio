@@ -28,25 +28,22 @@ function injectInlineImages(html: string) {
   );
 }
 
-function buildHtmlPreviewSource(blog: any) {
-  if (typeof blog.content !== "string") {
-    return "";
-  }
+function injectInlineImages(html: string) {
+  const imageRegex = /\[\[image:(https?:\/\/[^\]]+)\]\]/gi;
 
-  return `<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-      body { padding: 24px; }
-    </style>
-  </head>
-  <body>
-    ${blog.content}
-  </body>
-</html>`;
+  return html.replace(
+    imageRegex,
+    (_, url) => `
+      <figure class="my-14 overflow-hidden rounded-2xl border border-white/10 bg-black">
+        <img
+          src="${url}"
+          alt="Blog image"
+          loading="lazy"
+          class="w-full object-cover"
+        />
+      </figure>
+    `
+  );
 }
 
 export default async function BlogPage({
@@ -77,25 +74,23 @@ export default async function BlogPage({
 
   const blog = await res.json();
 
-  const isHtmlPost = Boolean(blog.isHtmlPost);
+  /* ---------------- PARSE + FIX CONTENT ---------------- */
   let html = "";
+  try {
+    const parser = editorjsHtml();
+    const parsed = parser.parse(blog.content);
 
-  if (!isHtmlPost) {
-    try {
-      const parser = editorjsHtml();
-      const parsed = parser.parse(blog.content);
+    // 🔥 CRITICAL FIX
+    const htmlString = Array.isArray(parsed)
+      ? parsed.join("")
+      : String(parsed || "");
 
-      const htmlString = Array.isArray(parsed)
-        ? parsed.join("")
-        : String(parsed || "");
-
-      html = injectInlineImages(htmlString);
-    } catch {
-      html =
-        typeof blog.content === "string"
-          ? injectInlineImages(blog.content)
-          : "";
-    }
+    html = injectInlineImages(htmlString);
+  } catch {
+    html =
+      typeof blog.content === "string"
+        ? injectInlineImages(blog.content)
+        : "";
   }
 
   const postUrl = `${baseUrl}/blog/${blog.slug}`;
@@ -133,55 +128,23 @@ export default async function BlogPage({
         )}
 
         {/* Content */}
-        {!isHtmlPost && (
-          <div
-            className="
-              prose prose-invert prose-lg max-w-none
-              prose-headings:font-semibold
-              prose-p:text-white/80
-              prose-li:text-white/80
-              prose-strong:text-white
-              prose-a:text-white underline-offset-4
-            "
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        )}
+        <div
+          className="
+            prose prose-invert prose-lg max-w-none
+            prose-headings:font-semibold
+            prose-p:text-white/80
+            prose-li:text-white/80
+            prose-strong:text-white
+            prose-a:text-white underline-offset-4
+          "
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
 
         {/* Comments */}
-        {!isHtmlPost && (
-          <div className="mt-20">
-            <CommentSection blogId={String(blog._id)} />
-          </div>
-        )}
+        <div className="mt-20">
+          <CommentSection blogId={String(blog._id)} />
+        </div>
       </article>
-
-      {isHtmlPost && (
-        <section className="mx-auto w-full max-w-7xl px-4 pb-20 text-white">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/80">
-                HTML preview
-              </p>
-              <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">
-                Full-bleed interactive layout
-              </h2>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-black shadow-2xl shadow-black/30">
-            <iframe
-              title={blog.title}
-              srcDoc={buildHtmlPreviewSource(blog)}
-              sandbox="allow-scripts"
-              className="min-h-[900px] w-full bg-black"
-            />
-          </div>
-
-          <div className="mt-10">
-            <CommentSection blogId={String(blog._id)} />
-          </div>
-        </section>
-      )}
 
       <Footer />
     </main>

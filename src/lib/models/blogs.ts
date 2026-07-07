@@ -39,11 +39,6 @@ const BlogSchema = new Schema(
       default: false,
     },
 
-    isHtmlPost: {
-      type: Boolean,
-      default: false,
-    },
-
     likesCount: {
       type: Number,
       default: 0,

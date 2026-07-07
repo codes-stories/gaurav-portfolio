@@ -8,7 +8,7 @@ export async function GET() {
   await connectDB();
   const blogs = await Blog.find({ published: true })
     .sort({ createdAt: -1 })
-    .select("title slug coverImage tags author likesCount commentsCount published courseId chapterId sectionId isHtmlPost createdAt updatedAt")
+    .select("title slug coverImage tags author likesCount commentsCount published courseId chapterId sectionId createdAt updatedAt")
     .populate("author", "name");
 
   return NextResponse.json(blogs);
@@ -42,7 +42,6 @@ export async function POST(req: Request) {
       chapterId: body.chapterId || undefined,
       sectionId: body.sectionId || undefined,
       isCourse: Boolean(body.courseId),
-      isHtmlPost: Boolean(body.isHtmlPost),
     });
 
     return NextResponse.json(blog, { status: 201 });

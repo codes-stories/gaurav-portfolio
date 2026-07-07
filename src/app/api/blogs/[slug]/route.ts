@@ -33,7 +33,6 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
       {
         ...body,
         isCourse: Boolean(body.courseId),
-        isHtmlPost: Boolean(body.isHtmlPost),
       },
       { new: true }
     );
