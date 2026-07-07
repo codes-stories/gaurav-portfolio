@@ -46,9 +46,10 @@ function buildHtmlPreviewSource(blog: any) {
 </html>`;
   }
 
-  const markup = typeof blog.content?.htmlMarkup === "string" ? blog.content.htmlMarkup : "";
-  const styles = typeof blog.content?.htmlStyles === "string" ? `<style>${blog.content.htmlStyles}</style>` : "";
-  const scripts = typeof blog.content?.htmlScripts === "string" ? `<script>${blog.content.htmlScripts}</script>` : "";
+  const content = blog.content || {};
+  const markup = typeof content.htmlMarkup === "string" ? content.htmlMarkup : "";
+  const styles = typeof content.htmlStyles === "string" ? `<style>${content.htmlStyles}</style>` : "";
+  const scripts = typeof content.htmlScripts === "string" ? `<script>${content.htmlScripts}</script>` : "";
 
   return `<!doctype html>
 <html>
@@ -152,7 +153,14 @@ export default async function BlogPage({
         )}
 
         {/* Content */}
-        {!isHtmlPost && (
+        {isHtmlPost ? (
+          <iframe
+            title={blog.title}
+            srcDoc={buildHtmlPreviewSource(blog)}
+            sandbox="allow-scripts"
+            className="min-h-[600px] w-full rounded-2xl border border-white/10 bg-black"
+          />
+        ) : (
           <div
             className="
               prose prose-invert prose-lg max-w-none
@@ -167,40 +175,10 @@ export default async function BlogPage({
         )}
 
         {/* Comments */}
-        {!isHtmlPost && (
-          <div className="mt-20">
-            <CommentSection blogId={String(blog._id)} />
-          </div>
-        )}
+        <div className="mt-20">
+          <CommentSection blogId={String(blog._id)} />
+        </div>
       </article>
-
-      {isHtmlPost && (
-        <section className="mx-auto w-full max-w-7xl px-4 pb-20 text-white">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/80">
-                HTML preview
-              </p>
-              <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">
-                Full-bleed interactive layout
-              </h2>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-black shadow-2xl shadow-black/30">
-            <iframe
-              title={blog.title}
-              srcDoc={buildHtmlPreviewSource(blog)}
-              sandbox="allow-scripts"
-              className="min-h-[900px] w-full bg-black"
-            />
-          </div>
-
-          <div className="mt-10">
-            <CommentSection blogId={String(blog._id)} />
-          </div>
-        </section>
-      )}
 
       <Footer />
     </main>
