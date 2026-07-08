@@ -28,25 +28,22 @@ function injectInlineImages(html: string) {
   );
 }
 
-function buildHtmlPreviewSource(blog: any) {
-  if (typeof blog.content !== "string") {
-    return "";
-  }
+function injectInlineImages(html: string) {
+  const imageRegex = /\[\[image:(https?:\/\/[^\]]+)\]\]/gi;
 
-  return `<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-      body { padding: 24px; }
-    </style>
-  </head>
-  <body>
-    ${blog.content}
-  </body>
-</html>`;
+  return html.replace(
+    imageRegex,
+    (_, url) => `
+      <figure class="my-14 overflow-hidden rounded-2xl border border-white/10 bg-black">
+        <img
+          src="${url}"
+          alt="Blog image"
+          loading="lazy"
+          class="w-full object-cover"
+        />
+      </figure>
+    `
+  );
 }
 
 export default async function BlogPage({
@@ -102,7 +99,7 @@ export default async function BlogPage({
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black">
-      <article className="max-w-3xl mx-auto px-4 py-20 text-white">
+      <article className="mx-auto max-w-3xl px-4 py-20 text-white">
         {/* Header */}
         <header className="mb-14">
           <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
