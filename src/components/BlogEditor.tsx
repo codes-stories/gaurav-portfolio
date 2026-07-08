@@ -461,7 +461,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </div>
           )}
 
-          {courseSelection && courseSelection !== "new-course" && (
+          {!isHtmlPost && courseSelection && courseSelection !== "new-course" && (
             <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Chapter</span>
               <select
@@ -483,7 +483,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </label>
           )}
 
-          {chapterSelection === "new-chapter" && (
+          {!isHtmlPost && chapterSelection === "new-chapter" && (
             <input
               value={newChapterTitle}
               onChange={(e) => setNewChapterTitle(e.target.value)}
@@ -492,7 +492,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             />
           )}
 
-          {chapterSelection && chapterSelection !== "new-chapter" && (
+          {!isHtmlPost && chapterSelection && chapterSelection !== "new-chapter" && (
             <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Section</span>
               <select
@@ -511,7 +511,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </label>
           )}
 
-          {sectionSelection === "new-section" && (
+          {!isHtmlPost && sectionSelection === "new-section" && (
             <input
               value={newSectionTitle}
               onChange={(e) => setNewSectionTitle(e.target.value)}
@@ -522,7 +522,27 @@ export default function BlogEditor({ initialData, slug }: Props) {
         </div>
       </div>
 
-      <Editor onSave={handleEditorSave} initialData={initialContent} />
+      {isHtmlPost ? (
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-6 shadow-2xl shadow-black/20">
+          <p className="mb-4 text-sm text-white/60">
+            HTML posts use the code fields above and render inside a sandboxed preview on the blog page.
+          </p>
+          <div className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white/70">
+            The rich text editor is disabled for HTML posts.
+          </div>
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={() => handleEditorSave("")}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-cyan-200 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white"
+            >
+              Save HTML post
+            </button>
+          </div>
+        </div>
+      ) : (
+        <Editor onSave={handleEditorSave} initialData={initialContent} />
+      )}
 
       {saving && (
         <div className="flex items-center gap-2 text-sm text-white/60">

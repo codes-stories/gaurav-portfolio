@@ -74,23 +74,25 @@ export default async function BlogPage({
 
   const blog = await res.json();
 
-  /* ---------------- PARSE + FIX CONTENT ---------------- */
+  const isHtmlPost = Boolean(blog.isHtmlPost);
   let html = "";
-  try {
-    const parser = editorjsHtml();
-    const parsed = parser.parse(blog.content);
 
-    // 🔥 CRITICAL FIX
-    const htmlString = Array.isArray(parsed)
-      ? parsed.join("")
-      : String(parsed || "");
+  if (!isHtmlPost) {
+    try {
+      const parser = editorjsHtml();
+      const parsed = parser.parse(blog.content);
 
-    html = injectInlineImages(htmlString);
-  } catch {
-    html =
-      typeof blog.content === "string"
-        ? injectInlineImages(blog.content)
-        : "";
+      const htmlString = Array.isArray(parsed)
+        ? parsed.join("")
+        : String(parsed || "");
+
+      html = injectInlineImages(htmlString);
+    } catch {
+      html =
+        typeof blog.content === "string"
+          ? injectInlineImages(blog.content)
+          : "";
+    }
   }
 
   const postUrl = `${baseUrl}/blog/${blog.slug}`;
@@ -128,17 +130,26 @@ export default async function BlogPage({
         )}
 
         {/* Content */}
-        <div
-          className="
-            prose prose-invert prose-lg max-w-none
-            prose-headings:font-semibold
-            prose-p:text-white/80
-            prose-li:text-white/80
-            prose-strong:text-white
-            prose-a:text-white underline-offset-4
-          "
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        {isHtmlPost ? (
+          <iframe
+            title={blog.title}
+            srcDoc={buildHtmlPreviewSource(blog)}
+            sandbox="allow-scripts"
+            className="min-h-[600px] w-full rounded-2xl border border-white/10 bg-black"
+          />
+        ) : (
+          <div
+            className="
+              prose prose-invert prose-lg max-w-none
+              prose-headings:font-semibold
+              prose-p:text-white/80
+              prose-li:text-white/80
+              prose-strong:text-white
+              prose-a:text-white underline-offset-4
+            "
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        )}
 
         {/* Comments */}
         <div className="mt-20">
