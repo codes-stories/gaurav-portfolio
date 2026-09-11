@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import EngineeringFocus from "@/components/EngineeringFocus";
 import SystemDesignCaseStudy from "@/components/SystemDesignCaseStudy";
 import { FloatingElements } from "@/components/Bacground";
-import { Projects } from "./projects/page";
+import Projects from "./projects/page";
 import { Contact } from "@/components/contact";
 import ToolsLearned from "@/components/Tool-learn";
 import ProfileVisitorTracker from "@/components/ProfileVisitorTracker";

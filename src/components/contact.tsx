@@ -40,7 +40,7 @@ export const Contact = () => {
                             </div>
                         </div>
                         <div className="flex space-x-4 pt-4">
-                            <a href="https://github.com/gk022135" className="p-3 bg-blue-600 hover:bg-blue-700 rounded-full transition-colors">
+                            <a href="https://github.com/codes-stories" className="p-3 bg-blue-600 hover:bg-blue-700 rounded-full transition-colors">
                                 <Github size={20} />
                             </a>
                             <a href="https://www.linkedin.com/in/gauravkrrr/" className="p-3 bg-blue-500 hover:bg-blue-600 rounded-full transition-colors">

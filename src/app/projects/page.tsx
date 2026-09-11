@@ -1,65 +1,217 @@
 "use client"
-import { Github, Linkedin, Instagram, Twitter, Mail, Phone, MapPin, Code, Star, Calendar, ExternalLink, ChevronDown, Menu, X } from 'lucide-react';
 
-import chat from '../../Assets/chat-app.png'
-import QrScan from '../../Assets/Qr-scan.png';
-import ShopEase from '../../Assets/produc-java.png';
-import CodeCollab from '../../Assets/collaborative-coding.jpg';
-import smvdex from '../../Assets/smvdex-home.png'
-import todo from '../../Assets/todo.png'
+import { useState } from "react"
 
-export const Projects = () => {
-    const projects = [
-        {
-            title: "smvdeX",
-            description: "Full-stack educational web-based solution with React, Node.js, and MongoDB",
-            tech: ["React", "Node.js", "MongoDB", "Express","Redis", "Nodemailer"],
-            image: smvdex,
-            github: "https://github.com/gk022135/01_project",
-            live: "projects/SmvDex"
-        },
-        {
-            title: "QR Entry-Exit System",
-            description: "We avoid the mannual making log when use make entry exit from University gate (MERN)",
-            tech: ["React", "API Integration", "CSS3"],
-            image: QrScan,
-            github: "https://github.com/gk022135",
-            live: "projects/Qr-system"
-        },
-        {
-            title: "ShopeEase",
-            description: "A DeskTop App which grocery shop owner to keep track of utitlies and their suppliers",
-            tech: ["React", "Firebase", "Tailwind CSS"],
-            image: ShopEase,
-            github: "https://github.com/gk022135",
-            live: "#"
-        },
-        {
-            title: "Web Chat",
-            description: "online chating web app where anyomously anyone can make chat",
-            tech: ["reactjs", "redux", "tailwindcss", "nodejs", "websocket"],
-            image: chat,
-            gtihub: 'https://github.com/gk022135',
-            live: "projects/chat-app"
-        },
-        {
-            title: "Shop :- ecommerce",
-            description: "Get the experrenc on e-commerce how they work, how redux toolkit is used for adding product cart",
-            tech: ["reactjs", "redux", "tailwindcss", "nodejs", "mongodb"],
-            image: CodeCollab,
-            github: 'https://my-shop-app.vercel.app/',
-            live: ""
-        },
+import chat from "../../Assets/chat-app.png"
+import QrScan from "../../Assets/Qr-scan.png"
+import ShopEase from "../../Assets/produc-java.png"
+import CodeCollab from "../../Assets/collaborative-coding.jpg"
+import smvdex from "../../Assets/smvdex-home.png"
+import todo from "../../Assets/todo.png"
+import coldBegging from "../../Assets/cold-begging.png"
+import pulseboard from "../../Assets/pulseboard.png"
+import gitpersona from "../../Assets/gitpersona.png"
 
-        {
-            title: "Todo app",
-            description: "Keep track of your own working, feature like timmer, progress bar etc",
-            tech: ["reactjs", "redux", "tailwindcss", "nodejs", "mongodb"],
-            image: todo,
-            github: 'https://github.com/gk022135',
-            live: "projects/Todo"
-        }
-    ];
+import { ProjectCard } from "../../components/ProjectCard"
+import { ProjectPreview } from "../../components/ProjectPreview"
+
+export interface Project {
+    title: string
+    tagline: string
+    description: string
+    longDescription: string
+    tech: string[]
+    features: string[]
+    image: any
+    github: string
+    live: string
+    role: string
+    status: string
+}
+
+const projects: Project[] = [
+    {
+        title: "cold-begging",
+        tagline: "See your code's dependency graph instantly",
+        description: "A VS Code extension that visualizes function call dependencies and more.",
+        longDescription: "Cold-begging is a developer productivity extension that maps out function call dependencies across your codebase in real-time. Instead of manually tracing imports and calls, get an interactive graph that shows exactly how your code is connected.",
+        tech: ["VS Code Extension", "TypeScript", "AST Parsing", "Graph Visualization"],
+        features: [
+            "Interactive function call dependency graph",
+            "Real-time codebase analysis",
+            "Jump to definition from graph nodes",
+            "Supports TypeScript and JavaScript",
+            "Lightweight and fast"
+        ],
+        image: coldBegging,
+        github: "https://github.com/codes-stories",
+        live: "https://cold-begging.vercel.app/",
+        role: "Creator & Lead Developer",
+        status: "Active"
+    },
+    {
+        title: "pulseboard",
+        tagline: "Developer workflow analytics that matter",
+        description: "A dashboard for monitoring and analyzing developer workflows.",
+        longDescription: "PulseBoard provides real-time insights into your development pipeline. Track commit frequency, review times, deployment health, and team velocity through a clean, data-driven dashboard built for engineering leaders.",
+        tech: ["React", "Node.js", "REST API", "Data Visualization", "Chart.js"],
+        features: [
+            "Real-time pipeline analytics",
+            "Team velocity tracking",
+            "Commit and review metrics",
+            "Deployment health monitoring",
+            "Clean data-driven dashboard"
+        ],
+        image: pulseboard,
+        github: "https://github.com/codes-stories/code-atlas",
+        live: "https://pulseboard.vercel.app/",
+        role: "Full-Stack Developer",
+        status: "Active"
+    },
+    {
+        title: "GitPersona",
+        tagline: "One identity per repository, automatically",
+        description: "Manage multiple git identities and switch profiles per repository.",
+        longDescription: "Git Multi Profile solves the problem of juggling work, personal, and open-source git identities. Create named profiles, auto-switch when opening repos, save uncommitted changes as patches, and commit with enhanced workflow — all stored locally.",
+        tech: ["VS Code Extension", "TypeScript", "Git CLI", "VS Code API"],
+        features: [
+            "Create and manage named profiles",
+            "Auto-switch profile per repository",
+            "Save uncommitted changes as patches",
+            "Enhanced commit workflow with patches",
+            "Secure PAT token storage",
+            "Import / export profiles"
+        ],
+        image: gitpersona,
+        github: "https://github.com/gitpersona/git-multi-profile",
+        live: "https://gitpersona.vercel.app/",
+        role: "Creator & Sole Developer",
+        status: "Published on VS Code Marketplace"
+    },
+    {
+        title: "smvdeX",
+        tagline: "Full-stack educational platform",
+        description: "A comprehensive educational web solution with real-time collaboration.",
+        longDescription: "smvdeX is a full-stack educational platform built for institutions. It features course management, student dashboards, real-time notifications, and an integrated email system. Built with performance in mind using Redis caching and MongoDB for flexible data storage.",
+        tech: ["React", "Node.js", "MongoDB", "Express", "Redis", "Nodemailer"],
+        features: [
+            "Course management system",
+            "Student progress dashboards",
+            "Real-time notifications",
+            "Email integration via Nodemailer",
+            "Redis caching for performance",
+            "Responsive design"
+        ],
+        image: smvdex,
+        github: "https://github.com/codes-stories",
+        live: "projects/SmvDex",
+        role: "Full-Stack Developer",
+        status: "Deployed"
+    },
+    {
+        title: "QR Entry-Exit System",
+        tagline: "Touchless campus access management",
+        description: "QR-based entry-exit system for university campus gate management.",
+        longDescription: "A MERN stack application that replaces manual logbooks at university gates. Students scan QR codes for touchless entry and exit, while administrators get a real-time dashboard showing campus occupancy and historical access logs.",
+        tech: ["React", "Node.js", "MongoDB", "QR Code API", "CSS3"],
+        features: [
+            "QR code generation for students",
+            "Touchless entry/exit scanning",
+            "Real-time occupancy tracking",
+            "Admin dashboard with analytics",
+            "Historical access logs",
+            "Campus-wide deployment ready"
+        ],
+        image: QrScan,
+        github: "https://github.com/codes-stories",
+        live: "projects/Qr-system",
+        role: "Full-Stack Developer",
+        status: "Deployed"
+    },
+    {
+        title: "ShopeEase",
+        tagline: "Grocery shop management simplified",
+        description: "A desktop application for grocery shop owners to manage inventory and suppliers.",
+        longDescription: "ShopeEase is a desktop application built to help small grocery shop owners manage their day-to-day operations. Track inventory levels, manage supplier relationships, generate invoices, and get low-stock alerts — all from a clean, intuitive interface.",
+        tech: ["React", "Firebase", "Tailwind CSS", "Electron"],
+        features: [
+            "Inventory management with categories",
+            "Supplier database and tracking",
+            "Invoice generation",
+            "Low-stock alerts",
+            "Sales analytics",
+            "Cross-platform desktop app"
+        ],
+        image: ShopEase,
+        github: "https://github.com/codes-stories",
+        live: "#",
+        role: "Full-Stack Developer",
+        status: "Complete"
+    },
+    {
+        title: "Web Chat",
+        tagline: "Anonymous real-time conversations",
+        description: "Anonymous real-time chat application with WebSocket connections.",
+        longDescription: "A real-time chat application where anyone can join conversations without signing up. Built with WebSocket for instant message delivery, Redux for state management, and a clean UI that works across devices.",
+        tech: ["React", "Redux", "Node.js", "WebSocket", "Tailwind CSS"],
+        features: [
+            "Anonymous chat rooms",
+            "Real-time message delivery via WebSocket",
+            "Multiple chat rooms",
+            "User presence indicators",
+            "Message history",
+            "Responsive design"
+        ],
+        image: chat,
+        github: "https://github.com/codes-stories",
+        live: "projects/chat-app",
+        role: "Full-Stack Developer",
+        status: "Deployed"
+    },
+    {
+        title: "Shop - E-commerce",
+        tagline: "Modern e-commerce experience",
+        description: "A full-featured e-commerce platform with Redux toolkit cart management.",
+        longDescription: "A modern e-commerce frontend that demonstrates Redux Toolkit for state management. Features include product browsing, cart operations with optimistic updates, wishlist, and a clean checkout flow built for learning how real e-commerce apps work.",
+        tech: ["React", "Redux Toolkit", "Tailwind CSS", "Node.js", "MongoDB"],
+        features: [
+            "Product catalog with filtering",
+            "Redux Toolkit cart management",
+            "Wishlist functionality",
+            "Responsive product pages",
+            "Optimistic UI updates",
+            "Clean checkout flow"
+        ],
+        image: CodeCollab,
+        github: "https://my-shop-app.vercel.app/",
+        live: "",
+        role: "Frontend Developer",
+        status: "Demo"
+    },
+    {
+        title: "Todo App",
+        tagline: "Productivity-focused task management",
+        description: "A feature-rich todo application with timers, progress tracking, and analytics.",
+        longDescription: "More than just a todo list — this app includes pomodoro timers, progress bars, task categorization, and daily productivity insights. Built with Redux for state persistence and a clean interface designed for focus.",
+        tech: ["React", "Redux", "Tailwind CSS", "Node.js", "MongoDB"],
+        features: [
+            "Pomodoro timer integration",
+            "Progress tracking with visual bars",
+            "Task categories and priorities",
+            "Daily productivity insights",
+            "Persistent state with Redux",
+            "Clean, distraction-free UI"
+        ],
+        image: todo,
+        github: "https://github.com/codes-stories",
+        live: "projects/Todo",
+        role: "Full-Stack Developer",
+        status: "Deployed"
+    }
+]
+
+const Projects = () => {
+    const [selectedProject, setSelectedProject] = useState<number | null>(null)
 
     return (
         <section className="py-20 px-4">
@@ -67,38 +219,23 @@ export const Projects = () => {
                 <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                     Featured Projects
                 </h2>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project, index) => (
-                        <div key={index} className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-700/50">
-                            <img src={typeof project.image === 'string' ? project.image : project.image.src} alt={project.title} className="w-full h-48 object-cover" />
-                            <div className="p-6">
-                                <h3 className="text-xl font-bold mb-3 text-white">{project.title}</h3>
-                                <p className="text-gray-300 mb-4">{project.description}</p>
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {project.tech.map((tech, techIndex) => (
-                                        <span key={techIndex} className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-sm">
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="flex space-x-4">
-                                    <a href={project.github} className="flex items-center text-gray-300 hover:text-white transition-colors">
-                                        <Github size={16} className="mr-2" />
-                                        Code
-                                    </a>
-                                    <a href={project.live} className="flex items-center text-gray-300 hover:text-white transition-colors">
-                                        <ExternalLink size={16} className="mr-2" />
-                                        Live
-                                    </a>
-                                </div>
-                            </div>
+                        <div key={project.title} onClick={() => setSelectedProject(index)}>
+                            <ProjectCard project={project} index={index} />
                         </div>
                     ))}
                 </div>
+
+                <ProjectPreview
+                    isOpen={selectedProject !== null}
+                    project={selectedProject !== null ? projects[selectedProject] : null}
+                    onClose={() => setSelectedProject(null)}
+                />
             </div>
         </section>
     )
-
 }
 
-export default Projects;
+export default Projects
