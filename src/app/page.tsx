@@ -13,6 +13,11 @@ import ToolsLearned from "@/components/Tool-learn";
 import ProfileVisitorTracker from "@/components/ProfileVisitorTracker";
 import InterviewSignalPanel from "@/components/InterviewSignalPanel";
 import ProfessionalSnapshot from "@/components/ProfessionalSnapshot";
+import ExperienceTimeline from "@/components/ExperienceTimeline";
+import TechRadar from "@/components/TechRadar";
+import GitHubPinnedRepos from "@/components/GitHubPinnedRepos";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import LiveDashboard from "@/components/LiveDashboard";
 
 export default function Home() {
   return (
@@ -38,6 +43,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* EXPERIENCE */}
+      <section id="experience" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <ExperienceTimeline />
+        </div>
+      </section>
+
       {/* PROJECTS */}
       <section
         id="projects"
@@ -54,6 +66,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TECH RADAR */}
+      <section id="tech-radar" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <TechRadar />
+        </div>
+      </section>
+
       {/* SKILLS / CARDS */}
       <section
         id="skills"
@@ -67,6 +86,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* GITHUB PINNED REPOS */}
+      <section id="repos" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <GitHubPinnedRepos />
+        </div>
+      </section>
+
       {/* ENGINEERING APPROACH */}
       <section
         id="approach"
@@ -77,13 +103,17 @@ export default function Home() {
         </div>
       </section>
 
+      {/* LIVE DASHBOARD */}
+      <section id="dashboard" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <LiveDashboard />
+        </div>
+      </section>
+
       {/* TESTIMONIALS */}
-      <section
-        id="testimonials"
-        className="py-24 flex items-center justify-center"
-      >
-        <div className="max-w-5xl w-full px-6 text-center">
-          <AnimatedTestimonialsDemo />
+      <section id="testimonials" className="flex items-center justify-center">
+        <div className="max-w-5xl w-full">
+          <TestimonialsCarousel />
         </div>
       </section>
 
