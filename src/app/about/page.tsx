@@ -2,40 +2,26 @@
 import Image from "next/image";
 import profilepic from "../../Assets/Gaurav Profile bst.jpg";
 import React, { useEffect } from "react";
+import Heatmap from "../../components/Heatmap";
+import { useGitHubContributions } from "../../hooks/useGitHubContributions";
+import { useLeetCodeCalendar } from "../../hooks/useLeetCodeCalendar";
+import { useLeetCode } from "../../hooks/useLeetCode";
 
 export default function About() {
   const [gitHubData, setGitHubData] = React.useState<any>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [leetCodeData, setLeetCodeData] = React.useState<any>(null);
+  const leetcode = useLeetCode("Gaurav_krrr");
+  const githubContributions = useGitHubContributions("codes-stories");
+  const leetcodeCalendar = useLeetCodeCalendar("Gaurav_krrr");
 
   useEffect(() => {
-    const githubcall = async () => {
-      fetch("https://api.github.com/users/codes-stories")
-        .then((response) => response.json())
-        .then((data) => {
-          setGitHubData(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching GitHub data:", error);
-          setLoading(false);
-        });
-    };
-
-    const leetcodcall = async () => {
-      fetch("https://leetcode-stats-api.herokuapp.com/Gaurav_krrr")
-        .then((response) => response.json())
-        .then((data) => {
-          setLeetCodeData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching LeetCode data:", error);
-        });
-    };
-
-    githubcall();
-    
-    leetcodcall();
+    fetch("/api/github/user")
+      .then((response) => response.json())
+      .then((data) => {
+        setGitHubData(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   return (
@@ -217,6 +203,19 @@ export default function About() {
                   ) : (
                     <p className="text-sm text-zinc-500">Failed to load stats</p>
                   )}
+
+                  {/* GitHub Heatmap */}
+                  <div className="mt-4 pt-4 border-t border-white/5">
+                    {githubContributions.loading ? (
+                      <div className="h-24 bg-zinc-800/50 rounded-xl animate-pulse" />
+                    ) : githubContributions.data ? (
+                      <Heatmap
+                        contributions={githubContributions.data.contributions}
+                        total={githubContributions.data.total}
+                        label="GitHub Contributions"
+                      />
+                    ) : null}
+                  </div>
                 </div>
               </div>
 
@@ -237,54 +236,7 @@ export default function About() {
                     </div>
                   </div>
                   
-                  {leetCodeData ? (
-                    <div className="space-y-4">
-                      <div className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-xl p-4 border border-orange-500/20">
-                        <div className="flex items-end justify-between">
-                          <div>
-                            <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-                              {leetCodeData.totalSolved}
-                            </div>
-                            <div className="text-xs text-zinc-400 mt-1">Total Solved</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm font-semibold text-zinc-300">
-                              Rank #{leetCodeData.ranking?.toLocaleString()}
-                            </div>
-                            <div className="text-xs text-zinc-500">{leetCodeData.acceptanceRate}% accepted</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center hover:bg-emerald-500/20 transition-colors">
-                          <div className="text-xl font-bold text-emerald-400">{leetCodeData.easySolved}</div>
-                          <div className="text-xs text-zinc-500 mt-1">Easy</div>
-                          <div className="text-xs text-zinc-600">/{leetCodeData.totalEasy}</div>
-                        </div>
-                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-center hover:bg-amber-500/20 transition-colors">
-                          <div className="text-xl font-bold text-amber-400">{leetCodeData.mediumSolved}</div>
-                          <div className="text-xs text-zinc-500 mt-1">Medium</div>
-                          <div className="text-xs text-zinc-600">/{leetCodeData.totalMedium}</div>
-                        </div>
-                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-center hover:bg-red-500/20 transition-colors">
-                          <div className="text-xl font-bold text-red-400">{leetCodeData.hardSolved}</div>
-                          <div className="text-xs text-zinc-500 mt-1">Hard</div>
-                          <div className="text-xs text-zinc-600">/{leetCodeData.totalHard}</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-zinc-500 pt-2">
-                        <span className="flex items-center gap-1">
-                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          {leetCodeData.contributionPoints} points
-                        </span>
-                        <span>Rep: {leetCodeData.reputation}</span>
-                      </div>
-                    </div>
-                  ) : (
+                  {leetcode.loading ? (
                     <div className="space-y-4">
                       <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
                       <div className="grid grid-cols-3 gap-2">
@@ -293,7 +245,159 @@ export default function About() {
                         <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
                       </div>
                     </div>
+                  ) : leetcode.error ? (
+                    <p className="text-sm text-red-400">Error: {leetcode.error}</p>
+                  ) : leetcode.data ? (
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-xl p-4 border border-orange-500/20">
+                        <div className="flex items-end justify-between">
+                          <div>
+                            <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                              {leetcode.data.totalSolved}
+                            </div>
+                            <div className="text-xs text-zinc-400 mt-1">Total Solved</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm font-semibold text-zinc-300">
+                              Rank #{leetcode.data.ranking?.toLocaleString()}
+                            </div>
+                            <div className="text-xs text-zinc-500">{leetcode.data.contributionPoint} contribution pts</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center hover:bg-emerald-500/20 transition-colors">
+                          <div className="text-xl font-bold text-emerald-400">{leetcode.data.easySolved}</div>
+                          <div className="text-xs text-zinc-500 mt-1">Easy</div>
+                          <div className="text-xs text-zinc-600">/{leetcode.data.totalEasy}</div>
+                        </div>
+                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-center hover:bg-amber-500/20 transition-colors">
+                          <div className="text-xl font-bold text-amber-400">{leetcode.data.mediumSolved}</div>
+                          <div className="text-xs text-zinc-500 mt-1">Medium</div>
+                          <div className="text-xs text-zinc-600">/{leetcode.data.totalMedium}</div>
+                        </div>
+                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-center hover:bg-red-500/20 transition-colors">
+                          <div className="text-xl font-bold text-red-400">{leetcode.data.hardSolved}</div>
+                          <div className="text-xs text-zinc-500 mt-1">Hard</div>
+                          <div className="text-xs text-zinc-600">/{leetcode.data.totalHard}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-zinc-500 pt-2">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          {leetcode.data.contributionPoint} points
+                        </span>
+                        <span>Rep: {leetcode.data.reputation}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-zinc-500">Failed to load LeetCode data</p>
                   )}
+
+                  {/* LeetCode Heatmap */}
+                  <div className="mt-4 pt-4 border-t border-white/5">
+                    {leetcodeCalendar.loading ? (
+                      <div className="h-24 bg-zinc-800/50 rounded-xl animate-pulse" />
+                    ) : leetcodeCalendar.data.length > 0 ? (
+                      <Heatmap
+                        contributions={leetcodeCalendar.data}
+                        total={leetcodeCalendar.total}
+                        label="LeetCode Submissions"
+                      />
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              {/* Codeforces Stats */}
+              <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all duration-500 overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-2xl group-hover:from-blue-500/20 transition-all duration-500" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                      <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4.5 7.5A1.5 1.5 0 016 9v10.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 011.5-1.5zm5.25-3A1.5 1.5 0 0111.25 6v13.5a1.5 1.5 0 01-3 0V6A1.5 1.5 0 019.75 4.5zm5.25 3A1.5 1.5 0 0116.5 9v10.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 011.5-1.5zm5.25-3A1.5 1.5 0 0121.75 6v13.5a1.5 1.5 0 01-3 0V6A1.5 1.5 0 0120.25 4.5z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold">Codeforces</h4>
+                      <p className="text-xs text-zinc-500">@gaurav_krrr</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl p-4 border border-blue-500/20">
+                      <div className="flex items-end justify-between">
+                        <div>
+                          <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                            5
+                          </div>
+                          <div className="text-xs text-zinc-400 mt-1">Problems Solved</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <a
+                      href="https://codeforces.com/profile/gaurav_krrr"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors mt-4"
+                    >
+                      View Profile
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* GeeksForGeeks Stats */}
+              <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all duration-500 overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-2xl group-hover:from-green-500/20 transition-all duration-500" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                      <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21.411 2.586a1 1 0 00-1.414 0l-13.99 13.99a1 1 0 001.414 1.414l13.99-13.99a1 1 0 000-1.414zM17 6a1 1 0 100-2 1 1 0 000 2zm-4.707 3.293a1 1 0 00-1.414 0l-4 4a1 1 0 101.414 1.414l4-4a1 1 0 000-1.414z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold">GeeksForGeeks</h4>
+                      <p className="text-xs text-zinc-500">@gauravkrrr</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-500/20">
+                      <div className="flex items-end justify-between">
+                        <div>
+                          <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                            180
+                          </div>
+                          <div className="text-xs text-zinc-400 mt-1">Problems Solved</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <a
+                      href="https://www.geeksforgeeks.org/profile/gauravkrrr?tab=activity"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors mt-4"
+                    >
+                      View Profile
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
