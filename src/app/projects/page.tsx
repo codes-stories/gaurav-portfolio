@@ -10,7 +10,7 @@ import smvdex from "../../Assets/smvdex-home.png"
 import todo from "../../Assets/todo.png"
 import coldBegging from "../../Assets/cold-begging.png"
 import pulseboard from "../../Assets/pulseboard.png"
-import gitpersona from "../../Assets/gitpersona.png"
+import gitpersona from "../../Assets/Gitpersona.png"
 
 import { ProjectCard } from "../../components/ProjectCard"
 import { ProjectPreview } from "../../components/ProjectPreview"
