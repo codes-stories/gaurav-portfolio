@@ -4,21 +4,21 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 
 const skills = [
-    { name: "React", level: 90, category: "frontend" },
-    { name: "Next.js", level: 85, category: "frontend" },
-    { name: "TypeScript", level: 80, category: "frontend" },
-    { name: "Node.js", level: 85, category: "backend" },
-    { name: "Express", level: 80, category: "backend" },
-    { name: "MongoDB", level: 75, category: "backend" },
-    { name: "PostgreSQL", level: 70, category: "backend" },
-    { name: "Redis", level: 65, category: "backend" },
-    { name: "Docker", level: 70, category: "devops" },
-    { name: "AWS", level: 60, category: "devops" },
-    { name: "Git", level: 90, category: "tools" },
-    { name: "Tailwind", level: 85, category: "tools" },
-    { name: "GraphQL", level: 65, category: "backend" },
-    { name: "Python", level: 60, category: "languages" },
-    { name: "Java", level: 55, category: "languages" },
+    { name: "React", level: 90, category: "frontend", color: "bg-blue-500" },
+    { name: "Next.js", level: 85, category: "frontend", color: "bg-zinc-400" },
+    { name: "TypeScript", level: 80, category: "frontend", color: "bg-blue-600" },
+    { name: "Node.js", level: 85, category: "backend", color: "bg-green-500" },
+    { name: "Express", level: 80, category: "backend", color: "bg-gray-400" },
+    { name: "MongoDB", level: 75, category: "backend", color: "bg-green-600" },
+    { name: "PostgreSQL", level: 70, category: "backend", color: "bg-indigo-500" },
+    { name: "Redis", level: 65, category: "backend", color: "bg-red-500" },
+    { name: "Docker", level: 70, category: "devops", color: "bg-blue-400" },
+    { name: "AWS", level: 60, category: "devops", color: "bg-orange-400" },
+    { name: "Git", level: 90, category: "tools", color: "bg-orange-500" },
+    { name: "Tailwind", level: 85, category: "tools", color: "bg-teal-400" },
+    { name: "GraphQL", level: 65, category: "backend", color: "bg-pink-500" },
+    { name: "Python", level: 60, category: "languages", color: "bg-yellow-400" },
+    { name: "Java", level: 55, category: "languages", color: "bg-red-600" },
 ]
 
 const categoryColors: Record<string, { ring: string; fill: string; text: string }> = {
@@ -124,8 +124,11 @@ export default function TechRadar() {
                                                 transition={{ duration: 0.5, delay: 0.5 + i * 0.05 }}
                                                 cx={center + skillCoord.x}
                                                 cy={center + skillCoord.y}
-                                                className={`${colors.fill} ${colors.ring}`}
-                                                strokeWidth={2}
+                                                className={`${skill.color}`}
+                                                fill="currentColor"
+                                                stroke="white"
+                                                strokeWidth={1}
+                                                strokeOpacity={0.3}
                                             />
                                         )}
 
@@ -174,7 +177,7 @@ export default function TechRadar() {
                                                             whileInView={{ width: `${skill.level}%` }}
                                                             viewport={{ once: true }}
                                                             transition={{ duration: 1, delay: 0.5 }}
-                                                            className={`h-full rounded-full ${colors.ring.replace("stroke-", "bg-")}`}
+                                                            className={`h-full rounded-full ${skill.color}`}
                                                         />
                                                     </div>
                                                 </div>

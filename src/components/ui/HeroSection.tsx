@@ -6,42 +6,47 @@ import Heatmap from "../../components/Heatmap";
 import { useGitHubContributions } from "../../hooks/useGitHubContributions";
 import { useLeetCodeCalendar } from "../../hooks/useLeetCodeCalendar";
 import { useLeetCode } from "../../hooks/useLeetCode";
+import BlogMarquee from "../../components/BlogMarquee";
+import ActivityFeed from "../../components/ActivityFeed";
 
 export default function About() {
   const [gitHubData, setGitHubData] = React.useState<any>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [leetCodeData, setLeetCodeData] = React.useState<any>(null);
+  const [ghActivity, setGhActivity] = React.useState<any>(null);
   const leetcode = useLeetCode("Gaurav_krrr");
   const githubContributions = useGitHubContributions("codes-stories");
   const leetcodeCalendar = useLeetCodeCalendar("Gaurav_krrr");
 
   useEffect(() => {
-    const githubcall = async () => {
-      fetch("https://api.github.com/users/codes-stories")
-        .then((response) => response.json())
-        .then((data) => {
-          setGitHubData(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching GitHub data:", error);
-          setLoading(false);
-        });
-    };
+    fetch("/api/github/user")
+      .then((response) => response.json())
+      .then((data) => {
+        setGitHubData(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
 
-    const leetcodcall = async () => {
-      fetch("https://leetcode-stats-api.herokuapp.com/Gaurav_krrr")
-        .then((response) => response.json())
-        .then((data) => {
-          setLeetCodeData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching LeetCode data:", error);
+    fetch("/api/github/events")
+      .then((r) => r.json())
+      .then((events) => {
+        if (!Array.isArray(events) || events.length === 0) return;
+        const c = { commits: 0, prs: 0, issues: 0, reviews: 0 };
+        events.forEach((e: any) => {
+          if (e.type === "PushEvent") c.commits += (e.payload?.size || 1);
+          else if (e.type === "PullRequestEvent") c.prs++;
+          else if (e.type === "IssuesEvent") c.issues++;
+          else if (e.type === "PullRequestReviewEvent") c.reviews++;
+          else c.commits++;
         });
-    };
-
-    githubcall();
-    leetcodcall();
+        const t = Object.values(c).reduce((a: number, b: number) => a + b, 0) || 1;
+        setGhActivity({
+          commits: Math.round((c.commits / t) * 100),
+          prs: Math.round((c.prs / t) * 100),
+          issues: Math.round((c.issues / t) * 100),
+          reviews: Math.round((c.reviews / t) * 100),
+        });
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -134,6 +139,9 @@ export default function About() {
                 </a>
               </div>
             </div>
+
+            <BlogMarquee />
+            <ActivityFeed />
           </div>
 
           {/* Right Content */}
@@ -217,6 +225,28 @@ export default function About() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </a>
+
+                      {ghActivity && (
+                        <div className="mt-4 pt-4 border-t border-white/5 space-y-2">
+                          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Contribution Activity</p>
+                          {[
+                            { label: "Commits", pct: ghActivity.commits, color: "bg-green-500" },
+                            { label: "Pull Requests", pct: ghActivity.prs, color: "bg-purple-500" },
+                            { label: "Issues", pct: ghActivity.issues, color: "bg-blue-500" },
+                            { label: "Code Review", pct: ghActivity.reviews, color: "bg-orange-500" },
+                          ].map((item) => (
+                            <div key={item.label}>
+                              <div className="flex justify-between text-xs mb-1">
+                                <span className="text-zinc-400">{item.label}</span>
+                                <span className="text-zinc-500">{item.pct}%</span>
+                              </div>
+                              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                <div className={`h-full rounded-full ${item.color} transition-all duration-1000`} style={{ width: `${item.pct}%` }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-sm text-zinc-500">Failed to load stats</p>
@@ -254,7 +284,18 @@ export default function About() {
                     </div>
                   </div>
 
-                  {leetcode.data ? (
+                  {leetcode.loading ? (
+                    <div className="space-y-4">
+                      <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
+                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
+                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
+                      </div>
+                    </div>
+                  ) : leetcode.error ? (
+                    <p className="text-sm text-red-400">Error: {leetcode.error}</p>
+                  ) : leetcode.data ? (
                     <div className="space-y-4">
                       <div className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-xl p-4 border border-orange-500/20">
                         <div className="flex items-end justify-between">
@@ -268,7 +309,7 @@ export default function About() {
                             <div className="text-sm font-semibold text-zinc-300">
                               Rank #{leetcode.data.ranking?.toLocaleString()}
                             </div>
-                            <div className="text-xs text-zinc-500">{leetcode.data.contributionPoint} contribution pts</div>
+                            <div className="text-xs text-zinc-500">{leetcode.data.contributionPoint} pts</div>
                           </div>
                         </div>
                       </div>
@@ -302,14 +343,7 @@ export default function About() {
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
-                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
-                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
-                      </div>
-                    </div>
+                    <p className="text-sm text-zinc-500">No LeetCode data</p>
                   )}
 
                   {/* LeetCode Heatmap */}
@@ -425,18 +459,58 @@ export default function About() {
 
               <div className="flex flex-wrap gap-3">
                 {[
-                  "JavaScript",
+                  // Languages
+                  "Golang",
+                  "Erlang/OTP",
                   "TypeScript",
-                  "React",
-                  "Next.js",
+                  "JavaScript",
+                  "Python",
+                  "C++",
+
+                  // Backend
                   "Node.js",
-                  "Express",
-                  "MongoDB",
-                  "PostgreSQL",
-                  "Redis",
-                  "Docker",
-                  "Git",
+                  "Express.js",
+                  "REST APIs",
+                  "WebSockets",
+                  "JWT",
+                  "Microservices",
+
+                  // Frontend & Mobile
+                  "React.js",
+                  "Next.js",
+                  "React Native",
                   "Tailwind CSS",
+                  "Redux",
+
+                  // Databases
+                  "PostgreSQL",
+                  "MongoDB",
+                  "Redis",
+                  "MySQL",
+                  "Prisma ORM",
+
+                  // Cloud & DevOps
+                  "Docker",
+                  "AWS EC2",
+                  "GCP",
+                  "CI/CD",
+                  "Git",
+                  "GitHub",
+                  "Jenkins",
+                  "Linux",
+
+                  // AI & APIs
+                  "Anthropic Claude API",
+                  "OpenAI API",
+                  "Gmail OAuth",
+
+                  // Concepts
+                  "Distributed Systems",
+                  "System Design",
+                  "Fault Tolerance",
+                  "Event-driven Architecture",
+                  "Functional Programming",
+                  "Agile/Scrum",
                 ].map((skill, index) => (
                   <span
                     key={skill}

@@ -15,7 +15,7 @@ export default function Hero() {
     const leetcodeCalendar = useLeetCodeCalendar("Gaurav_krrr")
 
     useEffect(() => {
-        fetch("https://api.github.com/users/codes-stories")
+        fetch("/api/github/user")
             .then((res) => res.json())
             .then((data) => { setGitHubData(data); setLoading(false) })
             .catch(() => setLoading(false))

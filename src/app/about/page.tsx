@@ -15,20 +15,13 @@ export default function About() {
   const leetcodeCalendar = useLeetCodeCalendar("Gaurav_krrr");
 
   useEffect(() => {
-    const githubcall = async () => {
-      fetch("https://api.github.com/users/codes-stories")
-        .then((response) => response.json())
-        .then((data) => {
-          setGitHubData(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching GitHub data:", error);
-          setLoading(false);
-        });
-    };
-
-    githubcall();
+    fetch("/api/github/user")
+      .then((response) => response.json())
+      .then((data) => {
+        setGitHubData(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   return (
@@ -243,7 +236,18 @@ export default function About() {
                     </div>
                   </div>
                   
-                  {leetcode.data ? (
+                  {leetcode.loading ? (
+                    <div className="space-y-4">
+                      <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
+                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
+                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
+                      </div>
+                    </div>
+                  ) : leetcode.error ? (
+                    <p className="text-sm text-red-400">Error: {leetcode.error}</p>
+                  ) : leetcode.data ? (
                     <div className="space-y-4">
                       <div className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-xl p-4 border border-orange-500/20">
                         <div className="flex items-end justify-between">
@@ -291,14 +295,7 @@ export default function About() {
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
-                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
-                        <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse" />
-                      </div>
-                    </div>
+                    <p className="text-sm text-zinc-500">Failed to load LeetCode data</p>
                   )}
 
                   {/* LeetCode Heatmap */}

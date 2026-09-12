@@ -19,7 +19,7 @@ export default function GitHubPinnedRepos() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch("https://api.github.com/users/codes-stories/repos?sort=stars&per_page=6&direction=desc")
+        fetch("/api/github/repos")
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data)) setRepos(data)

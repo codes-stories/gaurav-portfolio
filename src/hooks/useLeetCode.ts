@@ -5,61 +5,59 @@ import { useState, useEffect } from "react"
 export function useLeetCode(username: string) {
     const [data, setData] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         let cancelled = false
-        async function fetch() {
+
+        async function fetchData() {
             try {
-                const query = `
-                    query getUserProfile($username: String!) {
-                        matchedUser(username: $username) {
-                            submitStatsGlobal {
-                                acSubmissionNum {
-                                    difficulty
-                                    count
-                                    submissions
-                                }
-                            }
-                            profile {
-                                ranking
-                                reputation
-                                contributionPoint
-                                userAvatar
-                            }
-                        }
-                    }
-                `
-                const res = await fetch("https://leetcode.com/graphql", {
+                const res = await fetch("/api/leetcode", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query, variables: { username } }),
+                    body: JSON.stringify({ username }),
                 })
+
                 const json = await res.json()
-                if (!cancelled) {
-                    const user = json?.data?.matchedUser
-                    if (user) {
-                        const stats = user.submitStatsGlobal?.acSubmissionNum || []
-                        const get = (d: string) => stats.find((s: any) => s.difficulty === d)?.count || 0
-                        setData({
-                            totalSolved: get("All"),
-                            easySolved: get("Easy"),
-                            mediumSolved: get("Medium"),
-                            hardSolved: get("Hard"),
-                            totalEasy: 963,
-                            totalMedium: 2111,
-                            totalHard: 973,
-                            ranking: user.profile?.ranking || 0,
-                            reputation: user.profile?.reputation || 0,
-                            contributionPoint: user.profile?.contributionPoint || 0,
-                        })
-                    }
+
+                if (json.errors) {
+                    if (!cancelled) setError(json.errors[0]?.message || "GraphQL error")
+                    return
                 }
-            } catch {}
-            finally { if (!cancelled) setLoading(false) }
+
+                const user = json?.data?.matchedUser
+                if (!user) {
+                    if (!cancelled) setError("No user found")
+                    return
+                }
+
+                const stats = user.submitStatsGlobal?.acSubmissionNum || []
+                const find = (d: string) => stats.find((s: any) => s.difficulty === d)
+
+                const result = {
+                    totalSolved: find("All")?.count || 0,
+                    easySolved: find("Easy")?.count || 0,
+                    mediumSolved: find("Medium")?.count || 0,
+                    hardSolved: find("Hard")?.count || 0,
+                    totalEasy: 963,
+                    totalMedium: 2111,
+                    totalHard: 973,
+                    ranking: user.profile?.ranking || 0,
+                    reputation: user.profile?.reputation || 0,
+                    contributionPoint: user.contributions?.points || 0,
+                }
+
+                if (!cancelled) setData(result)
+            } catch (err: any) {
+                if (!cancelled) setError(err.message)
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
         }
-        fetch()
+
+        fetchData()
         return () => { cancelled = true }
     }, [username])
 
-    return { data, loading }
+    return { data, loading, error }
 }

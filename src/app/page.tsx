@@ -36,10 +36,17 @@ export default function Home() {
           <InterviewSignalPanel />
         </div>
       </section>
+      {/* TECH RADAR */}
+      <section id="tech-radar" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <TechRadar />
+        </div>
+      </section>
 
-      <section className="py-20 flex items-center justify-center">
-        <div className="max-w-6xl w-full px-6">
-          <ProfessionalSnapshot />
+      {/* GITHUB PINNED REPOS */}
+      <section id="repos" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <GitHubPinnedRepos />
         </div>
       </section>
 
@@ -47,6 +54,19 @@ export default function Home() {
       <section id="experience" className="flex items-center justify-center">
         <div className="max-w-6xl w-full">
           <ExperienceTimeline />
+        </div>
+      </section>
+
+      {/* LIVE DASHBOARD */}
+      <section id="dashboard" className="flex items-center justify-center">
+        <div className="max-w-6xl w-full">
+          <LiveDashboard />
+        </div>
+      </section>
+
+      <section className="py-20 flex items-center justify-center">
+        <div className="max-w-6xl w-full px-6">
+          <ProfessionalSnapshot />
         </div>
       </section>
 
@@ -66,12 +86,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TECH RADAR */}
-      <section id="tech-radar" className="flex items-center justify-center">
-        <div className="max-w-6xl w-full">
-          <TechRadar />
-        </div>
-      </section>
+
 
       {/* SKILLS / CARDS */}
       <section
@@ -86,12 +101,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* GITHUB PINNED REPOS */}
-      <section id="repos" className="flex items-center justify-center">
-        <div className="max-w-6xl w-full">
-          <GitHubPinnedRepos />
-        </div>
-      </section>
 
       {/* ENGINEERING APPROACH */}
       <section
@@ -103,12 +112,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* LIVE DASHBOARD */}
-      <section id="dashboard" className="flex items-center justify-center">
-        <div className="max-w-6xl w-full">
-          <LiveDashboard />
-        </div>
-      </section>
 
       {/* TESTIMONIALS */}
       <section id="testimonials" className="flex items-center justify-center">

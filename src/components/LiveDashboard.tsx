@@ -127,12 +127,12 @@ export default function LiveDashboard() {
     const [isRunning, setIsRunning] = useState(false)
 
     useEffect(() => {
-        fetch("https://api.github.com/users/codes-stories/events/public?per_page=10")
+        fetch("/api/github/events")
             .then((res) => res.json())
             .then((data) => { if (Array.isArray(data)) setEvents(data.slice(0, 8)) })
             .catch(() => {})
 
-        fetch("https://api.github.com/users/codes-stories")
+        fetch("/api/github/user")
             .then((res) => res.json())
             .then((d) => setStats({ repos: d.public_repos || 0, followers: d.followers || 0, stars: 0 }))
             .catch(() => {})
