@@ -89,7 +89,7 @@ export default function TrackerManagePage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen rounded-3xl bg-black/55 text-white">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <header className="border-b border-white/10 pb-5">
           <a href="/tracker" className="mb-4 inline-flex items-center gap-2 text-sm text-white/55 transition hover:text-white">

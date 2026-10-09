@@ -126,11 +126,11 @@ export default async function BlogPage({
   const postUrl = `${baseUrl}/blog/${blog.slug}`;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black">
+    <main className="min-h-screen rounded-3xl bg-black/55">
       <article className="mx-auto max-w-3xl px-4 py-20 text-white">
         {/* Header */}
         <header className="mb-14">
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
+          <h1 className="font-display heading-grad-2 text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
             {blog.title}
           </h1>
 

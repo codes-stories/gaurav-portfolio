@@ -116,6 +116,93 @@ html:not(.dark) .theme-surface :is(.border-white\/5, .border-white\/10, .border-
   border-color: hsl(var(--border));
 }
 
+/* Translucent dark sections: keep light text so it stays readable over the photo backdrop in light mode */
+html:not(.dark) .theme-surface :is(section, main).bg-black\/55 {
+  color: #fff;
+}
+
+html:not(.dark) .theme-surface :is(section, main).bg-black\/55 :is(.text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400, .text-zinc-500) {
+  color: #fff;
+}
+
+html:not(.dark) .theme-surface :is(section, main).bg-black\/55 :is(.text-white\/40, .text-white\/50, .text-white\/60, .text-white\/70, .text-white\/80) {
+  color: rgb(255 255 255 / 0.7);
+}
+
+html:not(.dark) .theme-surface :is(section, main).bg-black\/55 :is(.border-white\/5, .border-white\/10, .border-white\/15, .border-white\/20, .border-white\/25, .border-white\/30) {
+  border-color: rgb(255 255 255 / 0.15);
+}
+
+html:not(.dark) .theme-surface :is(section, main).bg-black\/55 .bg-white\/5 {
+  background-color: rgb(255 255 255 / 0.07);
+}
+
+@keyframes bgFloat {
+  0%,
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.08) translate3d(0, -2%, 0);
+  }
+}
+
+.bg-backdrop-float {
+  animation-name: bgFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+/* Display font families */
+.font-display {
+  font-family: var(--font-heading-serif), Georgia, "Times New Roman", serif;
+}
+
+.font-tech {
+  font-family: var(--font-heading-tech), "Trebuchet MS", Verdana, sans-serif;
+}
+
+.font-code {
+  font-family: var(--font-heading-code), "Courier New", ui-monospace, monospace;
+}
+
+/* Heading color themes (gradient text) */
+.heading-grad-1 {
+  background-image: linear-gradient(135deg, #67e8f9, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heading-grad-2 {
+  background-image: linear-gradient(135deg, #f0abfc, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heading-grad-3 {
+  background-image: linear-gradient(135deg, #6ee7b7, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heading-grad-4 {
+  background-image: linear-gradient(135deg, #fcd34d, #fb923c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heading-grad-5 {
+  background-image: linear-gradient(135deg, #93c5fd, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 @keyframes floatUp {
   0% {
     opacity: 0;

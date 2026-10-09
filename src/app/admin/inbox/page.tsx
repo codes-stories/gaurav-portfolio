@@ -13,9 +13,9 @@ export default async function AdminInboxPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black to-zinc-900">
+    <main className="min-h-screen rounded-3xl bg-black/55">
       <div className="max-w-4xl mx-auto px-4 py-14 text-white">
-        <h1 className="text-3xl font-semibold tracking-tight mb-8">
+        <h1 className="font-tech heading-grad-4 text-3xl font-semibold tracking-tight mb-8">
           Inbox
         </h1>
         <InboxList />

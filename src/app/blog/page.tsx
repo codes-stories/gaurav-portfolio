@@ -21,10 +21,10 @@ export default async function BlogListPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black to-zinc-900 mt-5">
+    <main className="min-h-screen rounded-3xl bg-black/55 mt-5">
       <div className="max-w-5xl mx-auto px-4 py-14 text-white">
         <header className="mb-10">
-          <h1 className="text-4xl font-semibold tracking-tight">
+          <h1 className="font-display heading-grad-1 text-4xl font-semibold tracking-tight">
             Blog
           </h1>
           <p className="text-white/60 mt-2">

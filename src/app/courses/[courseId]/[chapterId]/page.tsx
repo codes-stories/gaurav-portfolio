@@ -33,18 +33,18 @@ export default async function ChapterPage({ params }: { params: { courseId: stri
   const sections = await Section.find({ chapterId: chapter._id }).select("title slug order").sort({ order: 1, createdAt: 1 });
 
   return (
-    <div className="p-8">
+    <div className="min-h-[60vh] rounded-3xl bg-black/55 p-8 text-white">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold">{chapter.title}</h1>
-        <p className="text-sm text-gray-500">Course: <Link href={`/courses/${course.slug}`}>{course.title}</Link></p>
+        <h1 className="font-tech heading-grad-3 text-2xl font-bold">{chapter.title}</h1>
+        <p className="text-sm text-white/50">Course: <Link href={`/courses/${course.slug}`} className="text-cyan-300 underline-offset-4 hover:text-cyan-200 hover:underline">{course.title}</Link></p>
       </header>
 
       <section>
-        <h2 className="text-xl font-semibold mb-3">Sections</h2>
+        <h2 className="font-code text-xl font-semibold mb-3 text-cyan-200">Sections</h2>
         <ol className="list-decimal pl-6">
           {sections.map((s: any) => (
             <li key={s._id} className="mb-2">
-              <Link href={`/courses/${course.slug}/${chapter.slug}/${s.slug ?? s._id}`}>{s.title}</Link>
+              <Link href={`/courses/${course.slug}/${chapter.slug}/${s.slug ?? s._id}`} className="text-cyan-300 underline-offset-4 hover:text-cyan-200 hover:underline">{s.title}</Link>
             </li>
           ))}
         </ol>

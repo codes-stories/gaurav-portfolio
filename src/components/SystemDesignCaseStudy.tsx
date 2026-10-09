@@ -37,7 +37,7 @@ export default function SystemDesignCaseStudy() {
       <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-200">System design case study</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">SMVDeX: from QR scan to an auditable event.</h2>
+          <h2 className="font-code heading-grad-1 mt-3 text-3xl font-semibold tracking-tight md:text-4xl">SMVDeX: from QR scan to an auditable event.</h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground md:text-base">A concise look at the implementation today and the trade-offs I would make before increasing campus-scale traffic.</p>
         </div>
         <a href="/projects/SmvDex" className="inline-flex w-fit items-center gap-2 text-sm font-medium text-cyan-700 transition hover:text-cyan-600 dark:text-cyan-200 dark:hover:text-cyan-100">

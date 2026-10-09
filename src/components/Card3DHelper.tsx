@@ -58,7 +58,7 @@ export default function CardHelper() {
     return (
         <section className="py-20 px-4">
             <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                <h2 className="text-4xl font-bold text-center mb-16 font-code heading-grad-1">
                     Coding Platforms
                 </h2>
                 <div className="grid md:grid-cols-2 gap-6">

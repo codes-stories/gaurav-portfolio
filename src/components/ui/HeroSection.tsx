@@ -52,7 +52,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative bg-black text-white py-24 overflow-hidden"
+      className="relative rounded-3xl bg-black/55 text-white py-24 overflow-hidden"
     >
       {/* Ambient glow effects */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />

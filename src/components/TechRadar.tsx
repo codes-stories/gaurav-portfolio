@@ -44,12 +44,12 @@ export default function TechRadar() {
     useEffect(() => { setMounted(true) }, [])
 
     return (
-        <section className="relative bg-black text-white py-24 overflow-hidden">
+        <section className="relative rounded-3xl bg-black/55 text-white py-24 overflow-hidden">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
 
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 <div className="text-center mb-16">
-                    <h2 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-zinc-400 to-zinc-600 bg-clip-text text-transparent">
+                    <h2 className="text-5xl md:text-6xl font-bold mb-4 font-tech heading-grad-1">
                         Tech Radar
                     </h2>
                     <p className="text-zinc-400 text-lg">Skill proficiency across technologies</p>

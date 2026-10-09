@@ -31,20 +31,20 @@ export default async function CoursePage({ params }: { params: { courseId: strin
   }
 
   return (
-    <div className="p-8">
+    <div className="min-h-[60vh] rounded-3xl bg-black/55 p-8 text-white">
       <header className="mb-6">
-        <h1 className="text-3xl font-bold">{course.title}</h1>
-        {course.thumbnail && <img src={course.thumbnail} alt={`${course.title} thumbnail`} className="mt-4 max-w-full h-auto" />}
-        <p className="mt-4 text-gray-600">{course.description}</p>
-        <p className="mt-2 text-sm text-gray-500">Chapters: {course.chapters?.length || 0}</p>
+        <h1 className="font-tech heading-grad-1 text-3xl font-bold">{course.title}</h1>
+        {course.thumbnail && <img src={course.thumbnail} alt={`${course.title} thumbnail`} className="mt-4 max-w-full h-auto rounded-2xl border border-white/10" />}
+        <p className="mt-4 text-white/70">{course.description}</p>
+        <p className="mt-2 text-sm text-white/50">Chapters: {course.chapters?.length || 0}</p>
       </header>
 
       <section>
-        <h2 className="text-xl font-semibold mb-3">Chapters</h2>
+        <h2 className="font-code text-xl font-semibold mb-3 text-cyan-200">Chapters</h2>
         <ol className="list-decimal pl-6">
           {course.chapters?.map((ch: any) => (
             <li key={ch._id} className="mb-2">
-              <Link href={`/courses/${course.slug}/${ch.slug ?? ch._id}`}>{ch.title}</Link>
+              <Link href={`/courses/${course.slug}/${ch.slug ?? ch._id}`} className="text-cyan-300 underline-offset-4 hover:text-cyan-200 hover:underline">{ch.title}</Link>
             </li>
           ))}
         </ol>

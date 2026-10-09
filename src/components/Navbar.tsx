@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Menu, Moon, Sun } from "lucide-react";
+import { X, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
@@ -16,7 +16,6 @@ const NAV_ITEMS = [
 
 export function NavbarDemo() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const pathname = usePathname();
   // console.log("PATHNAME:", pathname);
 
@@ -35,19 +34,11 @@ export function NavbarDemo() {
     const savedTheme = localStorage.getItem("theme");
     const dark = savedTheme ? savedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
     document.documentElement.classList.toggle("dark", dark);
-    setIsDark(dark);
   }, []);
 
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
-
-  const toggleTheme = () => {
-    const dark = !isDark;
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("theme", dark ? "dark" : "light");
-    setIsDark(dark);
-  };
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -58,39 +49,39 @@ export function NavbarDemo() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <nav className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between rounded-2xl border border-white/15 bg-black/45 px-4 shadow-lg shadow-black/20 backdrop-blur-xl sm:px-6">
         {/* LOGO */}
         <a
           href="/"
-          className="text-lg sm:text-xl font-semibold tracking-tight text-foreground"
+          className="font-tech text-lg font-bold tracking-tight text-white sm:text-xl"
         >
-          Gaurav Kumar
+          Gaurav<span className="heading-grad-1">Krrr</span>
         </a>
 
         {/* DESKTOP MENU */}
-        <div className="hidden md:flex items-center gap-6 lg:gap-8">
+        <div className="hidden md:flex items-center gap-1 lg:gap-2">
           {showSectionNav &&
             NAV_ITEMS.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="nav-link"
+                className="rounded-lg px-3 py-1.5 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
               >
                 {item.label}
               </button>
             ))}
           <NavLink href="/courses">Courses</NavLink>
+          <NavLink href="/projects">Work</NavLink>
           <NavLink href="/tracker">Tracker</NavLink>
           <NavLink href="/about">Me</NavLink>
           <NavLink href="/blog">Blogs</NavLink>
           <NavLink href="/admin/inbox">Inbox</NavLink>
-          <ThemeToggle isDark={isDark} onClick={toggleTheme} />
         </div>
 
         {/* MOBILE TOGGLE */}
         <button
-          className="md:hidden rounded-lg p-2 text-foreground hover:bg-muted"
+          className="md:hidden rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
           onClick={() => setIsMenuOpen((v) => !v)}
           aria-label="Toggle Menu"
           aria-expanded={isMenuOpen}
@@ -104,21 +95,24 @@ export function NavbarDemo() {
       {isMenuOpen && (
         <div
           id="mobile-navigation"
-          className="absolute inset-x-0 top-16 z-50 h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain bg-background pb-[env(safe-area-inset-bottom)] shadow-2xl md:hidden"
+          className="absolute inset-x-3 top-[4.5rem] z-50 overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-black/80 pb-[env(safe-area-inset-bottom)] shadow-2xl backdrop-blur-xl sm:inset-x-5 md:hidden"
         >
-          <div className="space-y-2 px-6 py-5 text-lg">
+          <div className="space-y-1 px-5 py-4 text-lg">
             {showSectionNav &&
               NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="mobile-link"
+                  className="block w-full rounded-lg px-3 py-2.5 text-left text-white/75 transition-colors hover:bg-white/10 hover:text-white"
                 >
                   {item.label}
                 </button>
               ))}
             <MobileLink href="/courses" onClick={() => setIsMenuOpen(false)}>
               Courses
+            </MobileLink>
+            <MobileLink href="/projects" onClick={() => setIsMenuOpen(false)}>
+              Work
             </MobileLink>
             <MobileLink href="/tracker" onClick={() => setIsMenuOpen(false)}>
               Tracker
@@ -137,10 +131,6 @@ export function NavbarDemo() {
             >
               Inbox
             </MobileLink>
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-sm text-muted-foreground">Appearance</span>
-              <ThemeToggle isDark={isDark} onClick={toggleTheme} />
-            </div>
           </div>
         </div>
       )}
@@ -157,7 +147,20 @@ function NavLink({
   href: string;
   children: React.ReactNode;
 }) {
-  return <a href={href} className="nav-link">{children}</a>;
+  const pathname = usePathname();
+  const isActive = pathname === href || pathname?.startsWith(`${href}/`);
+
+  return (
+    <a
+      href={href}
+      className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${isActive
+        ? "bg-white/15 text-white"
+        : "text-white/70 hover:bg-white/10 hover:text-white"
+        }`}
+    >
+      {children}
+    </a>
+  );
 }
 
 function MobileLink({
@@ -169,22 +172,19 @@ function MobileLink({
   onClick: () => void;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isActive = pathname === href || pathname?.startsWith(`${href}/`);
+
   return (
-    <a href={href} onClick={onClick} className="mobile-link">
+    <a
+      href={href}
+      onClick={onClick}
+      className={`block rounded-lg px-3 py-2.5 transition-colors ${isActive
+        ? "bg-white/15 text-white"
+        : "text-white/75 hover:bg-white/10 hover:text-white"
+        }`}
+    >
       {children}
     </a>
-  );
-}
-
-function ThemeToggle({ isDark, onClick }: { isDark: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-      aria-label={isDark ? "Use light theme" : "Use dark theme"}
-    >
-      {isDark ? <Sun size={17} /> : <Moon size={17} />}
-    </button>
   );
 }

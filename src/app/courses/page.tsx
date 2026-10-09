@@ -43,11 +43,11 @@
 		  }, []);
 
 		  return (
-		    <main className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-zinc-900 text-white">
+		    <main className="min-h-screen rounded-3xl bg-black/55 text-white">
 		      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
 		        <div className="mb-10 max-w-2xl">
 		          <p className="text-xs uppercase tracking-[0.3em] text-cyan-200/70">Learning hub</p>
-		          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Courses</h1>
+		          <h1 className="font-tech heading-grad-1 mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Courses</h1>
 		          <p className="mt-4 text-sm leading-6 text-white/60">
 		            Browse the current course hierarchy. Blog posts can now attach to any course, chapter, or section.
 		          </p>
@@ -63,7 +63,7 @@
 							<Link
 								key={course._id}
 								href={`/courses/${course.slug ?? course._id}`}
-								className="rounded-3xl border border-white/10 bg-black/30 p-5 shadow-xl shadow-black/10 block"
+								className="rounded-3xl border border-white/10 bg-black/60 p-5 shadow-xl shadow-black/10 block"
 							>
 								<div className="flex items-start justify-between gap-4">
 									<div>

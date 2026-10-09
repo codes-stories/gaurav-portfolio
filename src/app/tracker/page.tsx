@@ -266,7 +266,7 @@ export default function TrackerPage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen rounded-3xl bg-black/55 text-white">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-6 sm:px-6 lg:px-8">
         <header className="flex flex-col gap-4 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
           <div>
@@ -312,7 +312,7 @@ export default function TrackerPage() {
             </button>
 
             {loading ? (
-              <div className="flex h-80 items-center justify-center rounded-lg border border-white/10 bg-zinc-950">
+                    <div className="flex h-80 items-center justify-center rounded-lg border border-white/10 bg-zinc-950/70">
                 <Loader2 className="animate-spin text-cyan-300" />
               </div>
             ) : logs.length === 0 ? (
@@ -346,7 +346,7 @@ export default function TrackerPage() {
 
           <aside className="rounded-lg border border-white/10 bg-zinc-950/80 p-4">
             <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-white/50">Progress</h2>
-            <div className="mt-4 rounded-lg border border-white/10 bg-black p-4">
+            <div className="mt-4 rounded-lg border border-white/10 bg-black/60 p-4">
               <div className="flex items-end justify-between">
                 <div>
                   <p className="text-sm text-white/50">Today completion</p>
@@ -472,7 +472,7 @@ function StatCard({ label, value, suffix = "", icon, tone }: { label: string; va
 
 function MiniStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border border-white/10 bg-black p-3">
+    <div className="rounded-md border border-white/10 bg-black/60 p-3">
       <p className="text-white/45">{label}</p>
       <p className="mt-1 text-lg font-semibold">{value}</p>
     </div>
