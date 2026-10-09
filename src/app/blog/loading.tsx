@@ -1,6 +1,6 @@
 export default function BlogLoading() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black to-zinc-900 mt-5">
+    <main className="min-h-screen rounded-3xl bg-black/55 mt-5">
       <div className="mx-auto max-w-5xl px-4 py-14 text-white">
         <div className="mb-10 space-y-3">
           <div className="h-10 w-40 rounded-lg bg-white/10 animate-pulse" />
@@ -11,7 +11,7 @@ export default function BlogLoading() {
           {Array.from({ length: 4 }).map((_, index) => (
             <article
               key={index}
-              className="overflow-hidden rounded-2xl border border-white/10 bg-black"
+              className="overflow-hidden rounded-2xl border border-white/10 bg-black/60"
             >
               <div className="h-56 bg-white/10 animate-pulse" />
               <div className="space-y-4 p-6">

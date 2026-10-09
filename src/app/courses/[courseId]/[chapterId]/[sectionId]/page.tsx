@@ -36,13 +36,13 @@ export default async function SectionPage({ params }: { params: { courseId: stri
   }
 
   return (
-    <div className="p-8">
+    <div className="min-h-[60vh] rounded-3xl bg-black/55 p-8 text-white">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold">{section.title}</h1>
-        <p className="text-sm text-gray-500">{course.title} / {chapter.title}</p>
+        <h1 className="font-display heading-grad-2 text-2xl font-bold">{section.title}</h1>
+        <p className="text-sm text-white/50">{course.title} / {chapter.title}</p>
       </header>
 
-      <article className="prose max-w-none">
+      <article className="prose prose-invert max-w-none">
         <div dangerouslySetInnerHTML={{ __html: section.content }} />
       </article>
     </div>

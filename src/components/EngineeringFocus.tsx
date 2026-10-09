@@ -28,7 +28,7 @@ export default function EngineeringFocus() {
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-200">
           Engineering approach
         </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+        <h2 className="font-display heading-grad-2 mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
           Building beyond the happy path.
         </h2>
         <p className="mt-4 text-sm leading-6 text-muted-foreground md:text-base">

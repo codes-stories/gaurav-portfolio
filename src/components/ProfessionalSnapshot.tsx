@@ -40,7 +40,7 @@ export default function ProfessionalSnapshot() {
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200/80">
             Developer profile
           </p>
-          <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-white md:text-5xl">
+          <h2 className="font-tech heading-grad-3 mt-3 max-w-3xl text-3xl font-semibold tracking-tight md:text-5xl">
             I build portfolio projects like small, working products.
           </h2>
         </div>

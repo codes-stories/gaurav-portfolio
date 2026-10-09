@@ -165,7 +165,7 @@ export default function LiveDashboard() {
     }
 
     return (
-        <section className="relative bg-black text-white py-24 overflow-hidden">
+        <section className="relative rounded-3xl bg-black/55 text-white py-24 overflow-hidden">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/3 rounded-full blur-3xl pointer-events-none" />
 
@@ -175,7 +175,7 @@ export default function LiveDashboard() {
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                         Live Activity Feed
                     </div>
-                    <h2 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-zinc-400 to-zinc-600 bg-clip-text text-transparent">
+                    <h2 className="text-5xl md:text-6xl font-bold mb-4 font-tech heading-grad-3">
                         Developer Dashboard
                     </h2>
                     <p className="text-zinc-400 text-lg">Real-time activity & interactive code playground</p>

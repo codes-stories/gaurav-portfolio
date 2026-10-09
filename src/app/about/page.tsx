@@ -27,19 +27,19 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative bg-black text-white py-24 overflow-hidden"
+      className="relative rounded-3xl bg-base-100 text-white py-24 overflow-hidden"
     >
       {/* Ambient glow effects */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-      
+
       {/* Grid pattern background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Heading */}
         <div className="mb-16 text-center">
-          <h2 className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-white via-zinc-400 to-zinc-600 bg-clip-text text-transparent">
+          <h2 className="font-display heading-grad-2 text-6xl md:text-7xl font-bold mb-4">
             About Me
           </h2>
           <div className="h-1 w-32 bg-gradient-to-r from-transparent via-white to-transparent rounded-full mx-auto" />
@@ -51,7 +51,7 @@ export default function About() {
             <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:border-white/20 transition-all duration-500 overflow-hidden group">
               {/* Hover glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 via-blue-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:via-blue-500/5 group-hover:to-purple-500/5 transition-all duration-500" />
-              
+
               <div className="relative z-10">
                 <div className="relative w-44 h-44 mx-auto mb-6">
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
@@ -153,7 +153,7 @@ export default function About() {
               {/* GitHub Stats */}
               <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all duration-500 overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-2xl group-hover:from-purple-500/20 transition-all duration-500" />
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
@@ -166,7 +166,7 @@ export default function About() {
                       <p className="text-xs text-zinc-500">@{gitHubData?.login || "codes-stories"}</p>
                     </div>
                   </div>
-                  
+
                   {loading ? (
                     <div className="space-y-4">
                       <div className="h-16 bg-zinc-800/50 rounded-xl animate-pulse" />
@@ -222,7 +222,7 @@ export default function About() {
               {/* LeetCode Stats */}
               <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all duration-500 overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-2xl group-hover:from-orange-500/20 transition-all duration-500" />
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
@@ -235,7 +235,7 @@ export default function About() {
                       <p className="text-xs text-zinc-500">Problem Solving</p>
                     </div>
                   </div>
-                  
+
                   {leetcode.loading ? (
                     <div className="space-y-4">
                       <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
@@ -316,7 +316,7 @@ export default function About() {
               {/* Codeforces Stats */}
               <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all duration-500 overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-2xl group-hover:from-blue-500/20 transition-all duration-500" />
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
@@ -329,7 +329,7 @@ export default function About() {
                       <p className="text-xs text-zinc-500">@gaurav_krrr</p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl p-4 border border-blue-500/20">
                       <div className="flex items-end justify-between">
@@ -360,7 +360,7 @@ export default function About() {
               {/* GeeksForGeeks Stats */}
               <div className="relative bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all duration-500 overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-2xl group-hover:from-green-500/20 transition-all duration-500" />
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
@@ -373,7 +373,7 @@ export default function About() {
                       <p className="text-xs text-zinc-500">@gauravkrrr</p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-500/20">
                       <div className="flex items-end justify-between">
