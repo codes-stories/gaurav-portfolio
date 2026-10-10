@@ -8,11 +8,11 @@ import {
 import {
   getUserId,
   isObjectId,
-  recalculateStreakForToday,
+  refreshStats,
   type DailyLogStatus,
 } from "@/lib/tracker";
 
-const statuses = ["pending", "completed", "deferred"];
+const statuses = ["pending", "completed", "deferred", "failed"];
 
 export async function PATCH(
   req: Request,
@@ -43,7 +43,7 @@ export async function PATCH(
     const previousPoints = Number(log.pointsAwarded || 0);
     const previousPenalty = Number(log.penaltyApplied || 0);
     const nextPoints = nextStatus === "completed" ? Number(task.pointValue || 0) : 0;
-    const nextPenalty = nextStatus === "deferred" ? Number(task.penaltyValue || 0) : 0;
+    const nextPenalty = nextStatus === "failed" ? Number(task.penaltyValue || 0) : 0;
 
     log.status = nextStatus;
     log.pointsAwarded = nextPoints;
@@ -69,7 +69,7 @@ export async function PATCH(
       { upsert: true }
     );
 
-    await recalculateStreakForToday();
+    await refreshStats();
 
     const populated = await TrackerDailyLog.findById(log._id).populate({
       path: "taskId",

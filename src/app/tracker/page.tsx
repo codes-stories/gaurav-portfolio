@@ -14,10 +14,16 @@ import {
   Plus,
   Target,
   X,
+  XCircle,
+  Award,
 } from "lucide-react";
+import WeeklyBadges from "@/components/tracker/WeeklyBadges";
+import MonthlyBadges from "@/components/tracker/MonthlyBadges";
+import YearlyBadges from "@/components/tracker/YearlyBadges";
+import type { BadgeWithCount } from "@/components/tracker/badge-types";
 
 type Priority = "low" | "medium" | "high" | "critical";
-type LogStatus = "pending" | "completed" | "deferred";
+type LogStatus = "pending" | "completed" | "deferred" | "failed";
 
 type Subject = {
   _id: string;
@@ -61,6 +67,12 @@ type Stats = {
   longestStreak: number;
 };
 
+type BadgesPayload = {
+  weekly: BadgeWithCount[];
+  monthly: BadgeWithCount[];
+  yearly: BadgeWithCount[];
+};
+
 const priorityStyles: Record<Priority, string> = {
   low: "border-sky-400/40 bg-sky-400/10 text-sky-200",
   medium: "border-yellow-400/40 bg-yellow-400/10 text-yellow-200",
@@ -93,26 +105,30 @@ export default function TrackerPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [logs, setLogs] = useState<DailyLog[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [badges, setBadges] = useState<BadgesPayload>({ weekly: [], monthly: [], yearly: [] });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [form, setForm] = useState(emptyTaskForm);
   const [floatPoints, setFloatPoints] = useState<Record<string, number>>({});
+  const [floatPenalties, setFloatPenalties] = useState<Record<string, number>>({});
 
   const loadTracker = async () => {
     setLoading(true);
-    const [subjectRes, topicRes, logRes, statsRes] = await Promise.all([
+    const [subjectRes, topicRes, logRes, statsRes, badgesRes] = await Promise.all([
       fetch("/api/tracker/subjects"),
       fetch("/api/tracker/topics"),
       fetch("/api/tracker/daily-log"),
       fetch("/api/tracker/stats"),
+      fetch("/api/tracker/badges"),
     ]);
 
     setSubjects(await subjectRes.json());
     setTopics(await topicRes.json());
     setLogs(await logRes.json());
     setStats(await statsRes.json());
+    setBadges(await badgesRes.json());
     setLoading(false);
   };
 
@@ -124,6 +140,7 @@ export default function TrackerPage() {
     const total = logs.length;
     const completed = logs.filter((log) => log.status === "completed").length;
     const deferred = logs.filter((log) => log.status === "deferred").length;
+    const failed = logs.filter((log) => log.status === "failed").length;
     const todayScore = logs.reduce(
       (sum, log) => sum + Number(log.pointsAwarded || 0) - Number(log.penaltyApplied || 0),
       0
@@ -133,10 +150,12 @@ export default function TrackerPage() {
       total,
       completed,
       deferred,
+      failed,
       todayScore,
+      netScore: (stats?.totalPoints || 0) - (stats?.totalPenalties || 0),
       completion: total ? Math.round((completed / total) * 100) : 0,
     };
-  }, [logs]);
+  }, [logs, stats]);
 
   const groupedLogs = useMemo(() => {
     const groups = new Map<string, { subject: Subject; topics: Map<string, { topic: Topic; logs: DailyLog[] }> }>();
@@ -176,7 +195,7 @@ export default function TrackerPage() {
               ...item,
               status,
               pointsAwarded: status === "completed" ? item.taskId.pointValue : 0,
-              penaltyApplied: status === "deferred" ? item.taskId.penaltyValue : 0,
+              penaltyApplied: status === "failed" ? item.taskId.penaltyValue : 0,
             }
           : item
       )
@@ -186,6 +205,17 @@ export default function TrackerPage() {
       setFloatPoints((current) => ({ ...current, [log._id]: log.taskId.pointValue }));
       window.setTimeout(() => {
         setFloatPoints((current) => {
+          const next = { ...current };
+          delete next[log._id];
+          return next;
+        });
+      }, 900);
+    }
+
+    if (status === "failed" && previousStatus !== "failed") {
+      setFloatPenalties((current) => ({ ...current, [log._id]: log.taskId.penaltyValue }));
+      window.setTimeout(() => {
+        setFloatPenalties((current) => {
           const next = { ...current };
           delete next[log._id];
           return next;
@@ -206,8 +236,12 @@ export default function TrackerPage() {
 
     const updated = await res.json();
     setLogs((current) => current.map((item) => (item._id === updated._id ? updated : item)));
-    const statsRes = await fetch("/api/tracker/stats");
+    const [statsRes, badgesRes] = await Promise.all([
+      fetch("/api/tracker/stats"),
+      fetch("/api/tracker/badges"),
+    ]);
     setStats(await statsRes.json());
+    setBadges(await badgesRes.json());
   };
 
   const createTask = async (event: FormEvent<HTMLFormElement>) => {
@@ -333,7 +367,13 @@ export default function TrackerPage() {
                         </div>
                         <div className="space-y-3">
                           {topicLogs.map((log) => (
-                            <TaskCard key={log._id} log={log} floating={floatPoints[log._id]} onStatus={patchLog} />
+                            <TaskCard
+                              key={log._id}
+                              log={log}
+                              floating={floatPoints[log._id]}
+                              floatingPenalty={floatPenalties[log._id]}
+                              onStatus={patchLog}
+                            />
                           ))}
                         </div>
                       </div>
@@ -362,12 +402,42 @@ export default function TrackerPage() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
               <MiniStat label="Done" value={totals.completed} />
+              <MiniStat label="Failed" value={totals.failed} />
               <MiniStat label="Deferred" value={totals.deferred} />
               <MiniStat label="Penalties" value={stats?.totalPenalties || 0} />
               <MiniStat label="Best streak" value={stats?.longestStreak || 0} />
+              <MiniStat
+                label="Net score"
+                value={totals.netScore}
+                valueClass={totals.netScore >= 0 ? "text-emerald-300" : "text-red-300"}
+              />
             </div>
           </aside>
         </div>
+
+        {/* ================== BADGES ================== */}
+        <section className="rounded-lg border border-white/10 bg-zinc-950/80 p-5">
+          <div className="mb-5 flex items-center gap-2">
+            <Award size={18} className="text-amber-300" />
+            <h2 className="font-tech heading-grad-4 text-lg font-semibold uppercase tracking-[0.16em] text-white/70">
+              Badges
+            </h2>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-white/55">Weekly streaks</h3>
+              <WeeklyBadges badges={badges.weekly} />
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-white/55">Monthly streaks</h3>
+              <MonthlyBadges badges={badges.monthly} />
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-white/55">Yearly streaks</h3>
+              <YearlyBadges badges={badges.yearly} />
+            </div>
+          </div>
+        </section>
       </div>
 
       {modalOpen && (
@@ -470,11 +540,11 @@ function StatCard({ label, value, suffix = "", icon, tone }: { label: string; va
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: number }) {
+function MiniStat({ label, value, valueClass }: { label: string; value: number; valueClass?: string }) {
   return (
     <div className="rounded-md border border-white/10 bg-black/60 p-3">
       <p className="text-white/45">{label}</p>
-      <p className="mt-1 text-lg font-semibold">{value}</p>
+      <p className={`mt-1 text-lg font-semibold ${valueClass || ""}`}>{value}</p>
     </div>
   );
 }
@@ -518,20 +588,23 @@ function SubjectTree({ subjects, topics }: { subjects: Subject[]; topics: Topic[
   );
 }
 
-function TaskCard({ log, floating, onStatus }: { log: DailyLog; floating?: number; onStatus: (log: DailyLog, status: LogStatus) => void }) {
+function TaskCard({ log, floating, floatingPenalty, onStatus }: { log: DailyLog; floating?: number; floatingPenalty?: number; onStatus: (log: DailyLog, status: LogStatus) => void }) {
   const task = log.taskId;
   const completed = log.status === "completed";
   const deferred = log.status === "deferred";
+  const failed = log.status === "failed";
 
   return (
-    <article className={`relative rounded-lg border p-4 transition ${completed ? "border-emerald-300/25 bg-emerald-300/10" : deferred ? "border-orange-300/25 bg-orange-300/10" : "border-white/10 bg-black"}`}>
+    <article className={`relative rounded-lg border p-4 transition ${completed ? "border-emerald-300/25 bg-emerald-300/10" : failed ? "border-red-300/25 bg-red-300/10" : deferred ? "border-orange-300/25 bg-orange-300/10" : "border-white/10 bg-black"}`}>
       {floating && <span className="pointer-events-none absolute right-6 top-2 animate-[floatUp_900ms_ease-out_forwards] text-sm font-semibold text-emerald-300">+{floating}</span>}
+      {floatingPenalty && <span className="pointer-events-none absolute right-6 top-2 animate-[floatUp_900ms_ease-out_forwards] text-sm font-semibold text-red-300">-{floatingPenalty}</span>}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className={`font-semibold ${completed ? "text-white/55 line-through" : "text-white"}`}>{task.title}</h4>
+            <h4 className={`font-semibold ${completed ? "text-white/55 line-through" : failed ? "text-white/70" : "text-white"}`}>{task.title}</h4>
             <span className={`rounded-full border px-2 py-0.5 text-xs capitalize ${priorityStyles[task.priority]}`}>{task.priority}</span>
             {deferred && <span className="rounded-full border border-orange-300/30 bg-orange-300/10 px-2 py-0.5 text-xs text-orange-200">Deferred</span>}
+            {failed && <span className="rounded-full border border-red-300/30 bg-red-300/10 px-2 py-0.5 text-xs text-red-200">Failed -{task.penaltyValue}</span>}
           </div>
           {task.description && <p className="mt-2 text-sm text-white/50">{task.description}</p>}
           <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/45">
@@ -540,7 +613,7 @@ function TaskCard({ log, floating, onStatus }: { log: DailyLog; floating?: numbe
             <span>-{task.penaltyValue} penalty</span>
           </div>
         </div>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 flex-wrap gap-2">
           <button onClick={() => onStatus(log, "completed")} className="inline-flex h-9 items-center gap-2 rounded-md border border-emerald-300/25 px-3 text-sm text-emerald-200 transition hover:bg-emerald-300/10">
             <Check size={15} />
             Complete
@@ -548,6 +621,10 @@ function TaskCard({ log, floating, onStatus }: { log: DailyLog; floating?: numbe
           <button onClick={() => onStatus(log, "deferred")} className="inline-flex h-9 items-center gap-2 rounded-md border border-orange-300/25 px-3 text-sm text-orange-200 transition hover:bg-orange-300/10">
             <Pause size={15} />
             Defer
+          </button>
+          <button onClick={() => onStatus(log, "failed")} className="inline-flex h-9 items-center gap-2 rounded-md border border-red-300/25 px-3 text-sm text-red-200 transition hover:bg-red-300/10">
+            <XCircle size={15} />
+            Failed
           </button>
         </div>
       </div>
