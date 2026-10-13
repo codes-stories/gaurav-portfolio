@@ -70,7 +70,7 @@ const DailyLogSchema = new Schema(
     date: { type: Date, required: true, index: true },
     status: {
       type: String,
-      enum: ["pending", "completed", "deferred"],
+      enum: ["pending", "completed", "deferred", "failed"],
       default: "pending",
       index: true,
     },
@@ -96,6 +96,26 @@ const UserStatsSchema = new Schema(
   { timestamps: true }
 );
 
+const BadgeSchema = new Schema(
+  {
+    userId: { type: String, required: true, default: "default", index: true },
+    badgeId: { type: String, required: true, index: true },
+    period: {
+      type: String,
+      enum: ["weekly", "monthly", "yearly"],
+      required: true,
+    },
+    periodKey: { type: String, required: true },
+    month: { type: Number, min: 1, max: 12 },
+    year: { type: Number },
+    streakDays: { type: Number, default: 0 },
+    awardedAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
+
+BadgeSchema.index({ userId: 1, badgeId: 1, periodKey: 1 }, { unique: true });
+
 export const TrackerSubject =
   models.TrackerSubject || mongoose.model("TrackerSubject", SubjectSchema);
 
@@ -106,8 +126,12 @@ export const TrackerTask =
   models.TrackerTask || mongoose.model("TrackerTask", TaskSchema);
 
 export const TrackerDailyLog =
-  models.TrackerDailyLog || mongoose.model("TrackerDailyLog", DailyLogSchema);
+  models.TrackerDailyLog ||
+  mongoose.model("TrackerDailyLog", DailyLogSchema);
 
 export const TrackerUserStats =
   models.TrackerUserStats ||
   mongoose.model("TrackerUserStats", UserStatsSchema);
+
+export const TrackerBadge =
+  models.TrackerBadge || mongoose.model("TrackerBadge", BadgeSchema);

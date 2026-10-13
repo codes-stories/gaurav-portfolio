@@ -3,12 +3,13 @@ import { connectDB } from "../../../lib/db";
 import Blog from "../../../lib/models/blogs";
 import User from "../../../lib/models/user";
 import { requireAdmin } from "../../../lib/auth";
+import { localizeBlogImages } from "../../../lib/blogAssets";
 
 export async function GET() {
   await connectDB();
   const blogs = await Blog.find({ published: true })
     .sort({ createdAt: -1 })
-    .select("title slug coverImage tags author likesCount commentsCount published courseId chapterId sectionId isHtmlPost createdAt updatedAt")
+    .select("title slug coverImage tags author likesCount commentsCount published courseId chapterId sectionId createdAt updatedAt")
     .populate("author", "name");
 
   return NextResponse.json(blogs);
@@ -30,10 +31,15 @@ export async function POST(req: Request) {
       }
     }
 
+    const content = typeof body.content === "string" && body.isHtmlPost
+      ? await localizeBlogImages(body.content)
+      : body.content;
+
     const blog = await Blog.create({
       title: body.title,
       slug: body.slug,
-      content: body.content,
+      content,
+      isHtmlPost: Boolean(body.isHtmlPost),
       coverImage: body.coverImage,
       tags: body.tags || [],
       author: author?._id,
@@ -42,7 +48,6 @@ export async function POST(req: Request) {
       chapterId: body.chapterId || undefined,
       sectionId: body.sectionId || undefined,
       isCourse: Boolean(body.courseId),
-      isHtmlPost: Boolean(body.isHtmlPost),
     });
 
     return NextResponse.json(blog, { status: 201 });

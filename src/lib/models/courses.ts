@@ -28,19 +28,10 @@ const CourseSchema = new Schema(
     { timestamps: true }
 );
 
-CourseSchema.pre("validate", function (next) {
+CourseSchema.pre("validate", function () {
     if (!this.slug && this.title) {
-        const text = this.title;
-        this.slug = (text || "")
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+        this.slug = slugify(this.title);
     }
-    next();
 });
 
 const ChapterSchema = new Schema(
@@ -54,19 +45,10 @@ const ChapterSchema = new Schema(
     { timestamps: true }
 );
 
-ChapterSchema.pre("validate", function (next) {
+ChapterSchema.pre("validate", function () {
     if (!this.slug && this.title) {
-        const text = this.title;
-        this.slug = (text || "")
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+        this.slug = slugify(this.title);
     }
-    next();
 });
 
 const SectionSchema = new Schema(
@@ -80,19 +62,10 @@ const SectionSchema = new Schema(
     { timestamps: true }
 );
 
-SectionSchema.pre("validate", function (next) {
+SectionSchema.pre("validate", function () {
     if (!this.slug && this.title) {
-        const text = this.title;
-        this.slug = (text || "")
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+        this.slug = slugify(this.title);
     }
-    next();
 });
 
 const Course = models.Course || mongoose.model("Course", CourseSchema);

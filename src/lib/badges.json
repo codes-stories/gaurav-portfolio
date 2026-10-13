@@ -1,0 +1,72 @@
+{
+  "weekly": [
+    {
+      "id": "weekly_streak_7",
+      "name": "Week Warrior",
+      "description": "Maintained a 7-day streak",
+      "streakDays": 7,
+      "icon": "flame",
+      "color": "#f97316"
+    },
+    {
+      "id": "weekly_streak_14",
+      "name": "Fortnight Fighter",
+      "description": "Maintained a 14-day streak",
+      "streakDays": 14,
+      "icon": "swords",
+      "color": "#f43f5e"
+    },
+    {
+      "id": "weekly_streak_21",
+      "name": "Habit Machine",
+      "description": "Maintained a 21-day streak",
+      "streakDays": 21,
+      "icon": "cog",
+      "color": "#a78bfa"
+    }
+  ],
+  "monthly": [
+    {
+      "id": "monthly_streak_30",
+      "name": "Monthly Master",
+      "description": "Maintained a 30-day streak",
+      "streakDays": 30,
+      "icon": "medal",
+      "color": "#22d3ee"
+    },
+    {
+      "id": "monthly_streak_60",
+      "name": "Iron Will",
+      "description": "Maintained a 60-day streak",
+      "streakDays": 60,
+      "icon": "shield",
+      "color": "#22c55e"
+    },
+    {
+      "id": "monthly_streak_90",
+      "name": "Quarter Champion",
+      "description": "Maintained a 90-day streak",
+      "streakDays": 90,
+      "icon": "trophy",
+      "color": "#eab308"
+    }
+  ],
+  "yearly": [
+    {
+      "id": "yearly_streak_365",
+      "name": "Year-Long Legend",
+      "description": "Maintained a 365-day streak",
+      "streakDays": 365,
+      "icon": "crown",
+      "color": "#fbbf24"
+    },
+    {
+      "id": "yearly_streak_730",
+      "name": "Two-Year Titan",
+      "description": "Maintained a 730-day streak",
+      "streakDays": 730,
+      "icon": "crown",
+      "color": "#f59e0b"
+    }
+  ]
+}

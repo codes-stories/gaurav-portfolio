@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Editor from "./Editor";
+import HtmlPostFrame from "./HtmlPostFrame";
 
 type Props = {
   initialData?: any;
@@ -147,10 +147,10 @@ export default function BlogEditor({ initialData, slug }: Props) {
     }
   }, [courses, courseSelection, selectedCourse]);
 
-  async function handleEditorSave(content: string) {
+  async function handleSave() {
     setSaving(true);
     try {
-      const resolvedContent = isHtmlPost ? buildHtmlPostContent() : content;
+      const resolvedContent = source || "<!doctype html><html><body></body></html>";
       let resolvedCourseId = courseSelection && courseSelection !== "new-course" ? courseSelection : "";
       let resolvedChapterId = chapterSelection && chapterSelection !== "new-chapter" ? chapterSelection : "";
       let resolvedSectionId = sectionSelection && sectionSelection !== "new-section" ? sectionSelection : "";
@@ -224,7 +224,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
                 (shouldCreateNewCourse
                   ? `${newCourseTitle || title || "Untitled"} section`
                   : `${title || "Untitled"} section`),
-              content,
+              content: resolvedContent,
             }),
           }
         );
@@ -257,7 +257,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
         courseId: resolvedCourseId || undefined,
         chapterId: resolvedChapterId || undefined,
         sectionId: resolvedSectionId || undefined,
-        isHtmlPost,
+        isHtmlPost: true,
         slug:
           postSlug ||
           (title
@@ -284,6 +284,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
         throw new Error(responseBody.error || "Save failed");
       }
 
+      if (typeof responseBody.content === "string") setSource(responseBody.content);
       alert("Saved");
     } catch (error: any) {
       alert(error.message || "Error");
@@ -407,8 +408,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
                 ))}
                 <option value="new-course">Create New Course</option>
               </select>
-            </label>
-          )}
+          </label>
 
           {courseSelection === "new-course" && (
             <div className="grid grid-cols-1 gap-4 rounded-2xl border border-cyan-300/20 bg-cyan-500/5 p-4 md:col-span-2 md:grid-cols-2">
@@ -461,7 +461,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </div>
           )}
 
-          {!isHtmlPost && courseSelection && courseSelection !== "new-course" && (
+          {courseSelection && courseSelection !== "new-course" && (
             <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Chapter</span>
               <select
@@ -483,7 +483,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </label>
           )}
 
-          {!isHtmlPost && chapterSelection === "new-chapter" && (
+          {chapterSelection === "new-chapter" && (
             <input
               value={newChapterTitle}
               onChange={(e) => setNewChapterTitle(e.target.value)}
@@ -492,7 +492,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             />
           )}
 
-          {!isHtmlPost && chapterSelection && chapterSelection !== "new-chapter" && (
+          {chapterSelection && chapterSelection !== "new-chapter" && (
             <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Section</span>
               <select
@@ -511,7 +511,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
             </label>
           )}
 
-          {!isHtmlPost && sectionSelection === "new-section" && (
+          {sectionSelection === "new-section" && (
             <input
               value={newSectionTitle}
               onChange={(e) => setNewSectionTitle(e.target.value)}
@@ -522,27 +522,52 @@ export default function BlogEditor({ initialData, slug }: Props) {
         </div>
       </div>
 
-      {isHtmlPost ? (
-        <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-6 shadow-2xl shadow-black/20">
-          <p className="mb-4 text-sm text-white/60">
-            HTML posts use the code fields above and render inside a sandboxed preview on the blog page.
-          </p>
-          <div className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white/70">
-            The rich text editor is disabled for HTML posts.
+      <div className="grid gap-4 rounded-2xl border border-white/10 bg-zinc-950/80 p-5 shadow-2xl shadow-black/20 lg:grid-cols-2">
+        <div className="min-w-0">
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <div>
+              <h3 className="text-base font-semibold text-white">HTML source</h3>
+              <p className="mt-1 text-xs text-white/45">A complete HTML file. Include CSS in <code>&lt;style&gt;</code> and JavaScript in <code>&lt;script&gt;</code>.</p>
+            </div>
+            <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-2.5 py-1 text-xs text-cyan-100">Code-first</span>
           </div>
-          <div className="mt-4 flex justify-end">
-            <button
-              type="button"
-              onClick={() => handleEditorSave("")}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-cyan-200 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white"
-            >
-              Save HTML post
-            </button>
-          </div>
+          <textarea
+            value={source}
+            onChange={(event) => setSource(event.target.value)}
+            spellCheck={false}
+            placeholder={'<!doctype html>\n<html>\n  <body>Hello world</body>\n</html>'}
+            className="min-h-[520px] w-full resize-y rounded-xl border border-white/10 bg-black/40 p-4 font-mono text-sm leading-6 text-white outline-none transition focus:border-cyan-300/40"
+            aria-label="HTML, CSS, and JavaScript source"
+          />
         </div>
-      ) : (
-        <Editor onSave={handleEditorSave} initialData={initialContent} />
-      )}
+
+        <div className="min-w-0">
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <div>
+              <h3 className="text-base font-semibold text-white">Live preview</h3>
+              <p className="mt-1 text-xs text-white/45">Runs in a sandboxed iframe and updates as you type.</p>
+            </div>
+            <span className="text-xs text-white/45">Scripts enabled</span>
+          </div>
+          <HtmlPostFrame
+            title="Blog post preview"
+            source={source}
+            className="w-full rounded-xl border border-white/10 bg-white"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-950/80 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-white/45">External image URLs are imported into MongoDB GridFS when you save.</p>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center justify-center rounded-lg bg-cyan-200 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {published ? "Save & publish" : "Save draft"}
+        </button>
+      </div>
 
       {saving && (
         <div className="flex items-center gap-2 text-sm text-white/60">

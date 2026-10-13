@@ -24,6 +24,11 @@ const BlogSchema = new Schema(
       required: true,
     },
 
+    isHtmlPost: {
+      type: Boolean,
+      default: false,
+    },
+
     coverImage: String,
 
     tags: [String],
@@ -35,11 +40,6 @@ const BlogSchema = new Schema(
     },
 
     published: {
-      type: Boolean,
-      default: false,
-    },
-
-    isHtmlPost: {
       type: Boolean,
       default: false,
     },

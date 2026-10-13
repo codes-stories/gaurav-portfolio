@@ -22,7 +22,13 @@ export async function connectDB() {
   const connectionString = dbUri as string;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(connectionString).then((mongoose) => mongoose);
+    cached.promise = mongoose.connect(connectionString, {
+      serverSelectionTimeoutMS: 5_000,
+    }).then((mongoose) => mongoose).catch((error) => {
+      // Do not cache a failed connection: Atlas may become available again without a restart.
+      cached.promise = null;
+      throw error;
+    });
   }
 
   cached.conn = await cached.promise;

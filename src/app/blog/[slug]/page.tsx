@@ -2,6 +2,7 @@ import CommentSection from "../../../../src/components/CommentSection";
 import Footer from "@/components/Footer";
 import editorjsHtml from "editorjs-html";
 import BlogShare from "../../../components/blogShare";
+import HtmlPostFrame from "@/components/HtmlPostFrame";
 
 import './blog.css';
 
@@ -102,7 +103,7 @@ export default async function BlogPage({
       <article className="mx-auto max-w-3xl px-4 py-20 text-white">
         {/* Header */}
         <header className="mb-14">
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
+          <h1 className="font-display heading-grad-2 text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
             {blog.title}
           </h1>
 
@@ -131,11 +132,10 @@ export default async function BlogPage({
 
         {/* Content */}
         {isHtmlPost ? (
-          <iframe
+          <HtmlPostFrame
             title={blog.title}
-            srcDoc={buildHtmlPreviewSource(blog)}
-            sandbox="allow-scripts"
-            className="min-h-[600px] w-full rounded-2xl border border-white/10 bg-black"
+            source={buildHtmlPreviewSource(blog)}
+            className="w-full rounded-2xl border border-white/10 bg-black"
           />
         ) : (
           <div
