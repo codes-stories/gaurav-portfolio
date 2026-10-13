@@ -37,20 +37,25 @@ const apiHeaders = {
 };
 
 export default function BlogEditor({ initialData, slug }: Props) {
-  const initialSource = typeof initialData?.content === "string"
-    ? initialData.content
-    : [
-        "<!doctype html>",
-        "<html>",
-        "<head>",
-        initialData?.content?.htmlStyles ? `<style>${initialData.content.htmlStyles}</style>` : "",
-        "</head>",
-        "<body>",
-        initialData?.content?.htmlMarkup || initialData?.content?.editorContent || "",
-        initialData?.content?.htmlScripts ? `<script>${initialData.content.htmlScripts}</script>` : "",
-        "</body>",
-        "</html>",
-      ].filter(Boolean).join("\n");
+  const initialContent =
+    typeof initialData?.content === "string"
+      ? initialData.content
+      : typeof initialData?.content?.editorContent === "string"
+        ? initialData.content.editorContent
+        : "";
+
+  const initialHtmlMarkup =
+    typeof initialData?.content?.htmlMarkup === "string"
+      ? initialData.content.htmlMarkup
+      : "";
+  const initialHtmlStyles =
+    typeof initialData?.content?.htmlStyles === "string"
+      ? initialData.content.htmlStyles
+      : "";
+  const initialHtmlScripts =
+    typeof initialData?.content?.htmlScripts === "string"
+      ? initialData.content.htmlScripts
+      : "";
 
   const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState(initialData?.title || "");
@@ -60,7 +65,10 @@ export default function BlogEditor({ initialData, slug }: Props) {
     Array.isArray(initialData?.tags) ? initialData.tags.join(", ") : ""
   );
   const [published, setPublished] = useState(Boolean(initialData?.published));
-  const [source, setSource] = useState(initialSource);
+  const [isHtmlPost, setIsHtmlPost] = useState(Boolean(initialData?.isHtmlPost));
+  const [htmlMarkup, setHtmlMarkup] = useState(initialHtmlMarkup);
+  const [htmlStyles, setHtmlStyles] = useState(initialHtmlStyles);
+  const [htmlScripts, setHtmlScripts] = useState(initialHtmlScripts);
 
   const [courses, setCourses] = useState<CourseType[]>([]);
   const [courseSelection, setCourseSelection] = useState<string>(
@@ -80,6 +88,30 @@ export default function BlogEditor({ initialData, slug }: Props) {
   const [newCoursePrice, setNewCoursePrice] = useState("0");
   const [newChapterTitle, setNewChapterTitle] = useState("");
   const [newSectionTitle, setNewSectionTitle] = useState("");
+
+  function buildHtmlPostContent() {
+    const markup = htmlMarkup || "<div></div>";
+    const styles = htmlStyles ? `<style>${htmlStyles}</style>` : "";
+    const scripts = htmlScripts ? `<script>${htmlScripts}<\/script>` : "";
+
+    return `${styles}${markup}${scripts}`;
+  }
+
+  function buildCombinedContent(editorContent: string) {
+    const hasCustomCode = Boolean(htmlMarkup || htmlStyles || htmlScripts);
+
+    if (!hasCustomCode && !isHtmlPost) {
+      return editorContent;
+    }
+
+    return {
+      editorContent,
+      htmlMarkup,
+      htmlStyles,
+      htmlScripts,
+      isHtmlPost,
+    };
+  }
 
   useEffect(() => {
     async function fetchCourses() {
@@ -317,7 +349,47 @@ export default function BlogEditor({ initialData, slug }: Props) {
             />
           </label>
 
-          <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
+          <label className="flex items-center justify-between rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
+            <span className="text-sm text-white/80">Add HTML / CSS / JS block</span>
+            <input
+              type="checkbox"
+              checked={isHtmlPost}
+              onChange={(e) => setIsHtmlPost(e.target.checked)}
+              className="h-4 w-4 accent-white"
+            />
+          </label>
+
+          {isHtmlPost && (
+            <div className="grid grid-cols-1 gap-4 md:col-span-2">
+              <p className="text-xs text-white/45">
+                This block will render alongside the normal post content.
+              </p>
+              <textarea
+                value={htmlMarkup}
+                onChange={(e) => setHtmlMarkup(e.target.value)}
+                placeholder="Paste HTML here"
+                rows={10}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/30"
+              />
+              <textarea
+                value={htmlStyles}
+                onChange={(e) => setHtmlStyles(e.target.value)}
+                placeholder="Paste CSS here"
+                rows={8}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/30"
+              />
+              <textarea
+                value={htmlScripts}
+                onChange={(e) => setHtmlScripts(e.target.value)}
+                placeholder="Paste JavaScript here"
+                rows={8}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/30"
+              />
+            </div>
+          )}
+
+          {!isHtmlPost && (
+            <label className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/30 px-4 py-3 md:col-span-2">
               <span className="text-sm text-white/80">Course</span>
               <select
                 value={courseSelection}
