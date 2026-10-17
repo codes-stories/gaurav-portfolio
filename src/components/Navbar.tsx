@@ -32,7 +32,8 @@ export function NavbarDemo() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const dark = savedTheme ? savedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // const dark = savedTheme ? savedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const dark = true; // Always dark mode for now
     document.documentElement.classList.toggle("dark", dark);
   }, []);
 

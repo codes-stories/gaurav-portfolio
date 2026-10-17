@@ -1,7 +1,7 @@
 import React from "react";
 import { connectDB } from "../../../../../lib/db";
 import Course, { Chapter, Section } from "../../../../../lib/models/courses";
-import Link from "next/link";
+import HtmlPostFrame from "@/components/HtmlPostFrame";
 
 async function resolveAll(courseParam: string, chapterParam: string, sectionParam: string) {
   await connectDB();
@@ -42,8 +42,12 @@ export default async function SectionPage({ params }: { params: { courseId: stri
         <p className="text-sm text-white/50">{course.title} / {chapter.title}</p>
       </header>
 
-      <article className="prose prose-invert max-w-none">
-        <div dangerouslySetInnerHTML={{ __html: section.content }} />
+      <article className="max-w-none">
+        <HtmlPostFrame
+          title={section.title}
+          source={typeof section.content === "string" ? section.content : ""}
+          className="w-full rounded-2xl border border-white/10"
+        />
       </article>
     </div>
   );

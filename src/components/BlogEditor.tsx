@@ -37,13 +37,6 @@ const apiHeaders = {
 };
 
 export default function BlogEditor({ initialData, slug }: Props) {
-  const initialContent =
-    typeof initialData?.content === "string"
-      ? initialData.content
-      : typeof initialData?.content?.editorContent === "string"
-        ? initialData.content.editorContent
-        : "";
-
   const initialHtmlMarkup =
     typeof initialData?.content?.htmlMarkup === "string"
       ? initialData.content.htmlMarkup
@@ -57,6 +50,26 @@ export default function BlogEditor({ initialData, slug }: Props) {
       ? initialData.content.htmlScripts
       : "";
 
+  const initialSource =
+    typeof initialData?.content === "string"
+      ? initialData.content
+      : [
+          "<!doctype html>",
+          "<html>",
+          "<head>",
+          '<meta charset="utf-8" />',
+          initialHtmlStyles ? `<style>${initialHtmlStyles}</style>` : "",
+          "</head>",
+          "<body>",
+          initialHtmlMarkup ||
+            (typeof initialData?.content?.editorContent === "string"
+              ? initialData.content.editorContent
+              : ""),
+          initialHtmlScripts ? `<script>${initialHtmlScripts}<\/script>` : "",
+          "</body>",
+          "</html>",
+        ].filter(Boolean).join("\n");
+
   const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState(initialData?.title || "");
   const [postSlug, setPostSlug] = useState(initialData?.slug || slug || "");
@@ -69,6 +82,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
   const [htmlMarkup, setHtmlMarkup] = useState(initialHtmlMarkup);
   const [htmlStyles, setHtmlStyles] = useState(initialHtmlStyles);
   const [htmlScripts, setHtmlScripts] = useState(initialHtmlScripts);
+  const [source, setSource] = useState(initialSource);
 
   const [courses, setCourses] = useState<CourseType[]>([]);
   const [courseSelection, setCourseSelection] = useState<string>(
@@ -94,23 +108,23 @@ export default function BlogEditor({ initialData, slug }: Props) {
     const styles = htmlStyles ? `<style>${htmlStyles}</style>` : "";
     const scripts = htmlScripts ? `<script>${htmlScripts}<\/script>` : "";
 
-    return `${styles}${markup}${scripts}`;
-  }
-
-  function buildCombinedContent(editorContent: string) {
-    const hasCustomCode = Boolean(htmlMarkup || htmlStyles || htmlScripts);
-
-    if (!hasCustomCode && !isHtmlPost) {
-      return editorContent;
-    }
-
-    return {
-      editorContent,
-      htmlMarkup,
-      htmlStyles,
-      htmlScripts,
-      isHtmlPost,
-    };
+    return `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html { color-scheme: dark; }
+      html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      body { padding: 24px; }
+    </style>
+    ${styles}
+  </head>
+  <body>
+    ${markup}
+    ${scripts}
+  </body>
+</html>`;
   }
 
   useEffect(() => {
@@ -150,7 +164,7 @@ export default function BlogEditor({ initialData, slug }: Props) {
   async function handleSave() {
     setSaving(true);
     try {
-      const resolvedContent = source || "<!doctype html><html><body></body></html>";
+      const resolvedContent = source.trim() || buildHtmlPostContent();
       let resolvedCourseId = courseSelection && courseSelection !== "new-course" ? courseSelection : "";
       let resolvedChapterId = chapterSelection && chapterSelection !== "new-chapter" ? chapterSelection : "";
       let resolvedSectionId = sectionSelection && sectionSelection !== "new-section" ? sectionSelection : "";
@@ -408,7 +422,8 @@ export default function BlogEditor({ initialData, slug }: Props) {
                 ))}
                 <option value="new-course">Create New Course</option>
               </select>
-          </label>
+            </label>
+          )}
 
           {courseSelection === "new-course" && (
             <div className="grid grid-cols-1 gap-4 rounded-2xl border border-cyan-300/20 bg-cyan-500/5 p-4 md:col-span-2 md:grid-cols-2">

@@ -29,22 +29,17 @@ function injectInlineImages(html: string) {
   );
 }
 
-function injectInlineImages(html: string) {
-  const imageRegex = /\[\[image:(https?:\/\/[^\]]+)\]\]/gi;
+function buildHtmlPreviewSource(blog: any) {
+  if (typeof blog.content === "string") {
+    return blog.content;
+  }
 
-  return html.replace(
-    imageRegex,
-    (_, url) => `
-      <figure class="my-14 overflow-hidden rounded-2xl border border-white/10 bg-black">
-        <img
-          src="${url}"
-          alt="Blog image"
-          loading="lazy"
-          class="w-full object-cover"
-        />
-      </figure>
-    `
-  );
+  const content = blog.content || {};
+  const markup = typeof content.htmlMarkup === "string" ? content.htmlMarkup : "";
+  const styles = typeof content.htmlStyles === "string" ? `<style>${content.htmlStyles}</style>` : "";
+  const scripts = typeof content.htmlScripts === "string" ? `<script>${content.htmlScripts}<\/script>` : "";
+
+  return `${styles}${markup}${scripts}`;
 }
 
 export default async function BlogPage({
@@ -99,8 +94,12 @@ export default async function BlogPage({
   const postUrl = `${baseUrl}/blog/${blog.slug}`;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black">
-      <article className="mx-auto max-w-3xl px-4 py-20 text-white">
+    <main className="min-h-screen rounded-3xl bg-black/55 mt-5">
+      <article
+        className={`mx-auto px-4 py-20 text-white ${
+          isHtmlPost ? "max-w-6xl" : "max-w-3xl"
+        }`}
+      >
         {/* Header */}
         <header className="mb-14">
           <h1 className="font-display heading-grad-2 text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-5">
@@ -135,7 +134,7 @@ export default async function BlogPage({
           <HtmlPostFrame
             title={blog.title}
             source={buildHtmlPreviewSource(blog)}
-            className="w-full rounded-2xl border border-white/10 bg-black"
+            className="w-full rounded-2xl border border-white/10"
           />
         ) : (
           <div

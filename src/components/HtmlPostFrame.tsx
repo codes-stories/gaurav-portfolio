@@ -8,6 +8,36 @@ type Props = {
   className?: string;
 };
 
+function ensureDocument(source: string) {
+  const trimmed = source.trim();
+  if (!trimmed) {
+    return "<!doctype html><html><head></head><body></body></html>";
+  }
+  if (/<!doctype\s+html|<html[\s>]/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html { color-scheme: dark; }
+      html, body { margin: 0; padding: 0; background: transparent; color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; }
+      body { padding: 24px; }
+      img, svg, video, canvas { max-width: 100%; height: auto; }
+      pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+      pre { overflow-x: auto; }
+      table { border-collapse: collapse; }
+    </style>
+  </head>
+  <body>
+${trimmed}
+  </body>
+</html>`;
+}
+
 function withAutoHeight(source: string) {
   const resizeScript = `<script>
     (() => {
@@ -30,7 +60,7 @@ export default function HtmlPostFrame({ source, title, className }: Props) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(640);
   const srcDoc = useMemo(
-    () => withAutoHeight(source || "<!doctype html><html><body></body></html>"),
+    () => withAutoHeight(ensureDocument(source || "")),
     [source]
   );
 
@@ -50,9 +80,9 @@ export default function HtmlPostFrame({ source, title, className }: Props) {
       ref={frameRef}
       title={title}
       srcDoc={srcDoc}
-      sandbox="allow-scripts"
+      sandbox="allow-scripts allow-same-origin allow-popups"
       className={className}
-      style={{ height }}
+      style={{ height, width: "100%", border: 0, display: "block", backgroundColor: "transparent" }}
     />
   );
 }
